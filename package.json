@@ -1,0 +1,56 @@
+{
+  "name": "front-sdk",
+  "version": "0.0.1",
+  "description": "A JavaScript API for Front (https://frontapp.com)",
+  "homepage": "https://github.com/resin-io-modules/front-sdk#readme",
+  "main": "build/index.js",
+  "types": "src/index.ts",
+  "keywords": [
+    "resin",
+    "typescript"
+  ],
+  "author": "Heds Simons <hedley@resin.io>",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/resin-io-modules/front-sdk.git"
+  },
+  "bugs": {
+    "url": "https://github.com/resin-io-modules/front-sdk/issues"
+  },
+  "scripts": {
+    "build": "gulp build",
+    "lint": "gulp tslint",
+    "test": "gulp tslint && gulp test",
+    "prepublish": "npm run build && npm test"
+  },
+  "devDependencies": {
+    "@types/chai": "^3.5.1",
+    "@types/chai-as-promised": "0.0.30",
+    "@types/mocha": "^2.2.41",
+    "chai": "^3.5.0",
+    "chai-as-promised": "^6.0.0",
+    "gulp": "^3.9.1",
+    "gulp-mocha": "^3.0.0",
+    "gulp-sourcemaps": "^2.3.1",
+    "gulp-tslint": "^7.1.0",
+    "gulp-typescript": "^3.1.4",
+    "gulp-util": "^3.0.8",
+    "mocha": "^3.3.0",
+    "mocha-junit-reporter": "^1.13.0",
+    "tslint": "^4.5.1",
+    "typescript": "^2.3.2"
+  },
+  "dependencies": {
+    "@types/bluebird-global": "^3.0.1",
+    "@types/lodash": "^4.14.54",
+    "@types/node": "^6.0.48",
+    "@types/request": "^0.0.41",
+    "@types/request-promise": "^4.1.33",
+    "bluebird": "^3.5.0",
+    "lodash": "^4.17.2",
+    "request": "^2.79.0",
+    "request-promise": "^4.1.1",
+    "typed-error": "^0.1.0"
+  }
+}
