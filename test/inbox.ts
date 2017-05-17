@@ -11,8 +11,6 @@ import { getKeeper } from './keeper';
 chai.use(ChaiAsPromised);
 chai.should();
 
-require('./apilogin');
-
 describe('Inboxes', function () {
 	const apiUrl = 'https://api2.frontapp.com';
 	const vaultKeeper = getKeeper();

@@ -10,19 +10,6 @@ import { getKeeper } from './keeper';
 chai.use(ChaiAsPromised);
 chai.should();
 
-// To post into an inbox, you need to know the channels in for it.
-// Channels are frontInstances of sources, such as SMTP, Facebook, Front Integration, etc.
-// So to post a new conversation:
-//  * Find the inbox you want (Sandbox)
-//  * List the channels and find the right one (Integration channel)
-//  * Post a message to that channel (get a conversation reference back)
-//
-// To post a comment to that conversation:
-//  * Use the comment reference to post (get back a link to the conversation)
-//
-// Now do a lot of the listing of shit, some of it will need to be more structured
-// to ensure we're getting the right things back.
-
 describe('Comments', function () {
 	const vaultKeeper = getKeeper();
 	const keys = vaultKeeper.keys;

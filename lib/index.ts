@@ -99,6 +99,12 @@ export class Front {
 			reqType: 'POST' }, params, callback),
 	};
 
+	public topic = {
+		listConversations: (params: TopicRequest.ListConversations, callback?: Callback<TopicConversations>):
+		Promise<TopicConversations> => this.httpCall({ path: 'topics/<topic_id>/conversations[q:page:limit]',
+			reqType: 'GET' }, params, callback),
+	};
+
 	private apiKey: string;
 
 	constructor(apiKey: string) {
@@ -541,15 +547,34 @@ export namespace MessageRequest {
 	}
 }
 
+// Topics /////////////////////////////////////////////////////////////////////
+export interface TopicConversations {
+	_pagination: Pagination;
+	_links: Links;
+	_results: Conversation[];
+}
+
+export namespace TopicRequest {
+	export interface ListConversations {
+		topic_id: string;
+		q?: string;
+		page?: number;
+		limit?: number;
+		[key: string]: string | number | void;
+	}
+}
+
+// Export Types ///////////////////////////////////////////////////////////////
 export type RequestData =
 	CommentRequest.Create | CommentRequest.Get | CommentRequest.ListMentions |
 	ConversationRequest.List | ConversationRequest.Get | ConversationRequest.Update |
 		ConversationRequest.ListComments | ConversationRequest.ListFollowers |
 		ConversationRequest.ListInboxes | ConversationRequest.ListMessages |
+	InboxRequest.Create | InboxRequest.Get | InboxRequest.ListChannels |
+		InboxRequest.ListConversations | InboxRequest.ListTeammates |
 	MessageRequest.Get | MessageRequest.Send | MessageRequest.Reply |
 		MessageRequest.ReceiveCustom |
-	InboxRequest.Create | InboxRequest.Get | InboxRequest.ListChannels |
-		InboxRequest.ListConversations | InboxRequest.ListTeammates;
+	TopicRequest.ListConversations;
 
 export type ResponseData =
 	Attachment | Author | Links | Recipient | Sender | Tag | ConversationReference |
@@ -558,4 +583,5 @@ export type ResponseData =
 		ConversationMessages |
 	Inbox | Inboxes | InboxCreation | InboxChannels | InboxConversations |
 		InboxTeammates |
-	Message;
+	Message |
+	TopicConversations;
