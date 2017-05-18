@@ -1,6 +1,6 @@
 {
   "name": "front-sdk",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "A JavaScript API for Front (https://frontapp.com)",
   "homepage": "https://github.com/resin-io-modules/front-sdk#readme",
   "main": "build/index.js",
