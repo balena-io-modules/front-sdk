@@ -1,10 +1,10 @@
 {
   "name": "front-sdk",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "A JavaScript API for Front (https://frontapp.com)",
   "homepage": "https://github.com/resin-io-modules/front-sdk#readme",
   "main": "build/index.js",
-  "types": "src/index.ts",
+  "types": "lib/index.ts",
   "keywords": [
     "resin",
     "typescript"
@@ -22,7 +22,7 @@
     "build": "gulp build",
     "lint": "gulp tslint",
     "test": "gulp tslint && gulp test",
-    "prepublish": "npm run build && npm test"
+    "prepublish": "npm run build"
   },
   "devDependencies": {
     "@types/chai": "^3.5.1",
@@ -30,6 +30,7 @@
     "@types/mocha": "^2.2.41",
     "chai": "^3.5.0",
     "chai-as-promised": "^6.0.0",
+    "github": "^9.2.0",
     "gulp": "^3.9.1",
     "gulp-mocha": "^3.0.0",
     "gulp-sourcemaps": "^2.3.1",
@@ -51,6 +52,6 @@
     "lodash": "^4.17.2",
     "request": "^2.79.0",
     "request-promise": "^4.1.1",
-    "typed-error": "^0.1.0"
+    "typed-error": "^1.0.0"
   }
 }

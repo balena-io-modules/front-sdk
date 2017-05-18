@@ -11,6 +11,11 @@ export interface TestKeys {
 	testMessageConvRef?: string;
 	testMessageResponse?: string;
 	testMessageSubject?: string;
+	testTopicIssue: {
+		owner: string;
+		repo: string;
+		issue: number;
+	};
 }
 
 export class VaultKeeper {

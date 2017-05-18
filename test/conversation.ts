@@ -15,14 +15,14 @@ chai.should();
 describe('Conversations', function () {
 	const vaultKeeper = getKeeper();
 	const keys = vaultKeeper.keys;
-	let Inst: Front;
+	let frontInst: Front;
 
 	before(function () {
-		Inst = new Front(keys.apiKey);
+		frontInst = new Front(keys.apiKey);
 	});
 
 	it('should list all conversations', function () {
-		return Inst.conversation.list().then(function (response: Conversations) {
+		return frontInst.conversation.list().then(function (response: Conversations) {
 			response._pagination.should.exist;
 			response._pagination.should.have.keys('prev', 'next', 'limit');
 			response._links.should.exist;
@@ -33,7 +33,7 @@ describe('Conversations', function () {
 	});
 
 	it('should list all unassigned conversations with a 1 entry per page limit', function () {
-		return Inst.conversation.list({
+		return frontInst.conversation.list({
 			limit: 1,
 			page: 1,
 			q: '[statuses]=unassigned',
@@ -52,7 +52,7 @@ describe('Conversations', function () {
 		if (!keys.testConversationId) {
 			throw new Error('Cannot find conversation ID');
 		}
-		return Inst.conversation.get({ conversation_id: keys.testConversationId })
+		return frontInst.conversation.get({ conversation_id: keys.testConversationId })
 		.then(function (response: Conversation) {
 			response._links.should.exist;
 			response._links.should.have.keys('self', 'related');
@@ -71,7 +71,7 @@ describe('Conversations', function () {
 		if (!keys.testConversationId) {
 			throw new Error('Cannot find conversation ID');
 		}
-		return Inst.conversation.listComments({ conversation_id: keys.testConversationId })
+		return frontInst.conversation.listComments({ conversation_id: keys.testConversationId })
 		.then(function (response: ConversationComments) {
 			response._pagination.should.exist;
 			response._pagination.should.have.keys('prev', 'next');
@@ -89,7 +89,7 @@ describe('Conversations', function () {
 		if (!keys.testConversationId) {
 			throw new Error('Cannot find conversation ID');
 		}
-		return Inst.conversation.listInboxes({ conversation_id: keys.testConversationId })
+		return frontInst.conversation.listInboxes({ conversation_id: keys.testConversationId })
 		.then(function (response: ConversationInboxes) {
 			response._pagination.should.exist;
 			response._pagination.should.have.keys('prev', 'next');
@@ -106,7 +106,7 @@ describe('Conversations', function () {
 		if (!keys.testConversationId) {
 			throw new Error('Cannot find conversation ID');
 		}
-		return Inst.conversation.listFollowers({ conversation_id: keys.testConversationId })
+		return frontInst.conversation.listFollowers({ conversation_id: keys.testConversationId })
 		.then(function (response: ConversationFollowers) {
 			response._pagination.should.exist;
 			response._pagination.should.have.keys('prev', 'next');
@@ -124,7 +124,7 @@ describe('Conversations', function () {
 		if (!keys.testConversationId) {
 			throw new Error('Cannot find conversation ID');
 		}
-		return Inst.conversation.listMessages({ conversation_id: keys.testConversationId })
+		return frontInst.conversation.listMessages({ conversation_id: keys.testConversationId })
 		.then(function (response: ConversationMessages) {
 			response._pagination.should.exist;
 			response._pagination.should.have.keys('prev', 'next', 'limit');
