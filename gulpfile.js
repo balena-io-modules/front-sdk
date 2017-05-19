@@ -18,7 +18,7 @@ function getProject(test) {
 // Compile the TS sources
 gulp.task('libBuild', () => {
 	const tsProject = getProject();
-	tsProject.src()
+	return tsProject.src()
 		.pipe(sourcemaps.init())
 		.pipe(tsProject())
 		.pipe(sourcemaps.write('./', { includeContent: true,
@@ -46,7 +46,7 @@ gulp.task('testRun', [ 'testBuild' ], () => {
 
 gulp.task('tslint', () => {
 	const tsProject = getProject(true);
-	tsProject.src()
+	return tsProject.src()
 		.pipe(tslint({
 			configuration: 'tslint.json',
 			formatter: 'prose'
@@ -56,4 +56,3 @@ gulp.task('tslint', () => {
 
 gulp.task('build', [ 'libBuild' ]);
 gulp.task('test', [ 'libBuild', 'testRun' ])
-

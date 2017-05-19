@@ -2,6 +2,7 @@
 /* tslint:disable: no-unused-expression */
 import * as chai from 'chai';
 import * as ChaiAsPromised from 'chai-as-promised';
+import ChaiString = require('chai-string');
 import * as _ from 'lodash';
 import 'mocha';
 import { Author, Channel, Front, Inbox, InboxChannels,
@@ -9,6 +10,7 @@ import { Author, Channel, Front, Inbox, InboxChannels,
 import { getKeeper } from './keeper';
 
 chai.use(ChaiAsPromised);
+chai.use(ChaiString);
 chai.should();
 
 describe('Inboxes', function () {
@@ -26,10 +28,8 @@ describe('Inboxes', function () {
 			response._pagination.should.exist;
 			response._pagination.should.include.keys('next', 'prev');
 			response._links.should.exist;
-			response._links.self.should.satisfy(function (message: string) {
-				return _.startsWith(message, `${apiUrl}/inboxes`);
-			});
-			response._results.length.should.gt(1);
+			response._links.self.should.startsWith(`${apiUrl}/inboxes`);
+			response._results.length.should.be.gt(1);
 
 			// Take first result, ensure it includes everything we know about
 			const inbox: Inbox = response._results[0];
@@ -52,9 +52,7 @@ describe('Inboxes', function () {
 		return frontInst.inbox.get({ inbox_id: keys.testInboxId}).then(function (response: Inbox) {
 			response._links.should.exist;
 			response._links.should.include.keys('self', 'related');
-			response._links.self.should.satisfy(function (message: string) {
-				return _.startsWith(message, `${apiUrl}/inboxes/${keys.testInboxId}`);
-			});
+			response._links.self.should.startsWith(`${apiUrl}/inboxes/${keys.testInboxId}`);
 			response._links.related.should.include.keys('channels', 'conversations', 'teammates');
 			response.id.should.equal(keys.testInboxId);
 			response.name.should.equal(keys.testInbox);
@@ -72,11 +70,9 @@ describe('Inboxes', function () {
 			response._pagination.should.exist;
 			response._pagination.should.include.keys('next', 'prev');
 			response._links.should.exist;
-			response._links.self.should.satisfy(function (message: string) {
-				return _.startsWith(message, `${apiUrl}/inboxes/${keys.testInboxId}/channels`);
-			});
+			response._links.self.should.startsWith(`${apiUrl}/inboxes/${keys.testInboxId}/channels`);
 			response._results.should.exist;
-			response._results.length.should.gt(1);
+			response._results.length.should.be.gt(1);
 			const testChannel: Channel | undefined = _.find(response._results, ['id', keys.testChannel ]);
 			if (!testChannel) {
 				throw new Error('Channel for test inbox could not be found');
@@ -94,11 +90,28 @@ describe('Inboxes', function () {
 			response._pagination.should.exist;
 			response._pagination.should.include.keys('next', 'prev');
 			response._links.should.exist;
-			response._links.self.should.satisfy(function (message: string) {
-				return _.startsWith(message, `${apiUrl}/inboxes/${keys.testInboxId}/conversations`);
-			});
+			response._links.self.should.startsWith(`${apiUrl}/inboxes/${keys.testInboxId}/conversations`);
 			response._results.should.exist;
-			response._results.length.should.gt(1);
+			response._results.length.should.be.gt(1);
+		});
+	});
+
+	it('should list all conversations in the test inbox using query string, finding previously known ones', function () {
+		if (!keys.testInboxId) {
+			throw new Error('Cannot find inbox ID');
+		}
+		return frontInst.inbox.listConversations({
+			inbox_id: keys.testInboxId,
+			page: 1,
+			q: 'q[statuses][]=unassigned&q[statuses][]=assigned'
+		}).then(function (response: InboxConversations) {
+			response._pagination.should.exist;
+			response._pagination.should.include.keys('next', 'prev');
+			response._links.should.exist;
+			response._links.self.should.startWith(`${apiUrl}/inboxes/${keys.testInboxId}/conversations`);
+			response._links.self.should.include('q[statuses][0]=unassigned&q[statuses][1]=assigned');
+			response._results.should.exist;
+			response._results.length.should.be.gt(1);
 		});
 	});
 
@@ -110,11 +123,9 @@ describe('Inboxes', function () {
 			response._pagination.should.exist;
 			response._pagination.should.include.keys('next', 'prev');
 			response._links.should.exist;
-			response._links.self.should.satisfy(function (message: string) {
-				return _.startsWith(message, `${apiUrl}/inboxes/${keys.testInboxId}/teammates`);
-			});
+			response._links.self.should.startWith(`${apiUrl}/inboxes/${keys.testInboxId}/teammates`);
 			response._results.should.exist;
-			response._results.length.should.gt(1);
+			response._results.length.should.be.gt(1);
 			const testAuthor: Author | undefined = _.find(response._results, ['username', keys.testAuthor ]);
 			if (!testAuthor) {
 				throw new Error('Author for test inbox could not be found');

@@ -58,7 +58,7 @@ describe('Topics', function () {
 			response._links.should.exist;
 			response._links.should.have.key('self');
 			response._results.should.exist;
-			response._results.length.should.be.eq(1);
+			response._results.length.should.eq(1);
 
 			const conversation: Conversation = response._results[0];
 			conversation._links.should.exist;

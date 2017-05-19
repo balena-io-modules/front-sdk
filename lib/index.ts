@@ -16,6 +16,10 @@ limitations under the License.
 /* tslint:disable: max-classes-per-file */
 
 import * as Promise from 'bluebird';
+import * as bodyParser from 'body-parser';
+import * as crypto from 'crypto';
+import * as express from 'express';
+import { Server } from 'http';
 import * as _ from 'lodash';
 import * as querystring from 'querystring';
 import * as request from 'request-promise';
@@ -23,8 +27,15 @@ import TypedError = require('typed-error');
 
 const URL = 'https://api2.frontapp.com';
 
+interface EventPreview {
+	_links: Links;
+	id: string;
+	type: string;
+	emitted_at: number;
+}
+
 interface Request {
-	reqType: string;
+	method: string;
 	path: string;
 }
 
@@ -38,78 +49,157 @@ export class Front {
 	// [tag[:tag]] is an optional tag that is used to build query string at the end of the path
 	public comment = {
 		create: (params: CommentRequest.Create, callback?: Callback<Comment>): Promise<Comment> =>
-			this.httpCall({ path: 'conversations/<conversation_id>/comments', reqType: 'POST' }, params, callback),
+			this.httpCall({ method: 'POST', path: 'conversations/<conversation_id>/comments'}, params, callback),
 		get: (params: CommentRequest.Get, callback?: Callback<Comment>): Promise<Comment> =>
-			this.httpCall({ path: 'comments/<comment_id>', reqType: 'GET' }, params, callback),
+			this.httpCall({ method: 'GET', path: 'comments/<comment_id>'}, params, callback),
 		listMentions: (params: CommentRequest.ListMentions, callback?: Callback<CommentMentions>):
-			Promise<CommentMentions> => this.httpCall({ path: 'comments/<comment_id>/mentions', reqType: 'GET' },
+			Promise<CommentMentions> => this.httpCall({method: 'GET', path: 'comments/<comment_id>/mentions'},
 			params, callback),
 	};
 
 	public conversation = {
 		get: (params: ConversationRequest.Get, callback?: Callback<Conversation>): Promise<Conversation> =>
-			this.httpCall({ path: 'conversations/<conversation_id>', reqType: 'GET' }, params, callback),
+			this.httpCall({ method: 'GET', path: 'conversations/<conversation_id>'}, params, callback),
 		list: (params?: ConversationRequest.List, callback?: Callback<Conversations>): Promise<Conversations> =>
-			this.httpCall({ path: 'conversations[q:page:limit]', reqType: 'GET' }, params, callback),
+			this.httpCall({ method: 'GET', path: 'conversations[q:page:limit]' }, params, callback),
 		listComments: (params: ConversationRequest.ListComments, callback?: Callback<ConversationComments>):
-			Promise<ConversationComments> => this.httpCall({ path: 'conversations/<conversation_id>/comments',
-			reqType: 'GET' }, params, callback),
+			Promise<ConversationComments> => this.httpCall({ method: 'GET',
+			path: 'conversations/<conversation_id>/comments' }, params, callback),
 		listFollowers: (params: ConversationRequest.ListFollowers,
 			callback?: Callback<ConversationFollowers>): Promise<ConversationFollowers> =>
-			this.httpCall({ path: 'conversations/<conversation_id>/followers', reqType: 'GET' }, params, callback),
+			this.httpCall({ method: 'GET', path: 'conversations/<conversation_id>/followers' }, params, callback),
 		listInboxes: (params: ConversationRequest.ListInboxes,
 			callback?: Callback<ConversationInboxes>): Promise<ConversationInboxes> =>
-			this.httpCall({ path: 'conversations/<conversation_id>/inboxes', reqType: 'GET' }, params, callback),
+			this.httpCall({ method: 'GET', path: 'conversations/<conversation_id>/inboxes' }, params, callback),
 		listMessages: (params: ConversationRequest.ListMessages,
 			callback?: Callback<ConversationMessages>): Promise<ConversationMessages> =>
-			this.httpCall({ path: 'conversations/<conversation_id>/messages[page:limit]', reqType: 'GET' },
+			this.httpCall({ method: 'GET', path: 'conversations/<conversation_id>/messages[page:limit]' },
 			params, callback),
 		update: (params: ConversationRequest.Update, callback?: Callback<void>): Promise<void> =>
-			this.httpCall({ path: 'conversations/<conversation_id}', reqType: 'PATCH' }, params, callback),
+			this.httpCall({ method: 'PATCH', path: 'conversations/<conversation_id}' }, params, callback),
 	};
 
 	public inbox = {
 		create: (params: InboxRequest.Create, callback?: Callback<InboxCreation>): Promise<InboxCreation> =>
-			this.httpCall({ path: 'inboxes', reqType: 'POST' }, params, callback),
+			this.httpCall({ method: 'POST', path: 'inboxes' }, params, callback),
 		get: (params: InboxRequest.Get, callback?: Callback<Inbox>): Promise<Inbox> =>
-			this.httpCall({ path: 'inboxes/<inbox_id>', reqType: 'GET' }, params, callback),
+			this.httpCall({ method: 'GET', path: 'inboxes/<inbox_id>' }, params, callback),
 		list: (callback?: Callback<Inboxes>): Promise<Inboxes> =>
-			this.httpCall({ path: 'inboxes', reqType: 'GET' }, null, callback),
+			this.httpCall({ method: 'GET', path: 'inboxes' }, null, callback),
 		listChannels: (params: InboxRequest.ListChannels, callback?: Callback<InboxChannels>):
-			Promise<InboxChannels> => this.httpCall({ path: 'inboxes/<inbox_id>/channels', reqType: 'GET' },
+			Promise<InboxChannels> => this.httpCall({ method: 'GET', path: 'inboxes/<inbox_id>/channels' },
 			params, callback),
 		listConversations: (params: InboxRequest.ListConversations, callback?: Callback<InboxConversations>):
-			Promise<InboxConversations> => this.httpCall({ path: 'inboxes/<inbox_id>/conversations[q:page:limit]',
-			reqType: 'GET' }, params, callback),
+			Promise<InboxConversations> => this.httpCall({ method: 'GET',
+			path: 'inboxes/<inbox_id>/conversations[q:page:limit]' }, params, callback),
 		listTeammates: (params: InboxRequest.ListTeammates, callback?: Callback<InboxTeammates>):
-			Promise<InboxTeammates> => this.httpCall({ path: 'inboxes/<inbox_id>/teammates', reqType: 'GET' },
+			Promise<InboxTeammates> => this.httpCall({ method: 'GET', path: 'inboxes/<inbox_id>/teammates' },
 			params, callback),
 	};
 
 	public message = {
 		get: (params: MessageRequest.Get, callback?: Callback<Message>): Promise<Message> =>
-			this.httpCall({ path: 'messages/<message_id>', reqType: 'GET' }, params, callback),
+			this.httpCall({ method: 'GET', path: 'messages/<message_id>' }, params, callback),
 		receiveCustom: (params: MessageRequest.ReceiveCustom,
 			callback?: Callback<ConversationReference>): Promise<ConversationReference> =>
-			this.httpCall({ path: 'channels/<channel_id>/incoming_messages', reqType: 'POST' }, params, callback),
+			this.httpCall({ method: 'POST', path: 'channels/<channel_id>/incoming_messages' }, params, callback),
 		reply: (params: MessageRequest.Reply, callback?: Callback<Status>): Promise<Status> =>
-			this.httpCall({ path: 'conversations/<conversation_id>/messages', reqType: 'POST' }, params, callback),
+			this.httpCall({ method: 'POST', path: 'conversations/<conversation_id>/messages' }, params, callback),
 		send: (params: MessageRequest.Send, callback?: Callback<ConversationReference>):
-			Promise<ConversationReference> => this.httpCall({ path: 'channels/<channel_id>/messages',
-			reqType: 'POST' }, params, callback),
+			Promise<ConversationReference> => this.httpCall({ method: 'POST',
+			path: 'channels/<channel_id>/messages' }, params, callback),
 	};
 
 	public topic = {
 		listConversations: (params: TopicRequest.ListConversations, callback?: Callback<TopicConversations>):
-		Promise<TopicConversations> => this.httpCall({ path: 'topics/<topic_id>/conversations[q:page:limit]',
-			reqType: 'GET' }, params, callback),
+		Promise<TopicConversations> => this.httpCall({ method: 'GET',
+			path: 'topics/<topic_id>/conversations[q:page:limit]' }, params, callback),
 	};
 
+	// Keys for Front access and event verification.
 	private apiKey: string;
+	private apiSecret: string;
 
-	constructor(apiKey: string) {
+	constructor(apiKey: string, apiSecret?: string) {
 		// Key.
 		this.apiKey = apiKey;
+		// Event signature secret.
+		if (apiSecret) {
+			this.apiSecret = apiSecret;
+		}
+	}
+
+	public registerEvents(opts: EventHookOptions, callback: EventCallback): Server | void {
+		let httpServer: Server | void;
+		let listener: express.Application;
+		const eventQueue: string[] = [];
+		const requestEvent = () => {
+			// Get next event in the queue.
+			const eventId = eventQueue[0];
+			this.httpCall({ path: 'events/<event_id>', method: 'GET' }, {
+				event_id: eventId
+			}).asCallback(callback)
+			.finally(() => {
+				// Get another event if there is one, else finish.
+				eventQueue.shift();
+				if (eventQueue.length > 0) {
+					requestEvent();
+				}
+			});
+		};
+		const addToEventQueue = (id: string): void => {
+			// Push the event onto the queue. If there's nothing already
+			// on it, retrieve now, else just return.
+			eventQueue.push(id);
+			if (eventQueue.length === 1) {
+				requestEvent();
+			}
+		};
+
+		// Ensure we have relevant details to hook into events.
+		if (!this.apiSecret) {
+			throw new Error('No secret key registered');
+		}
+		if (!opts || (opts.server && opts.port) || (!opts.server && !opts.port)) {
+			throw new Error('Pass either an Express instance or a port to listen on');
+		}
+		if (opts.port && typeof opts.port !== 'number') {
+			throw new Error('`port` must be a number');
+		}
+		const hookPath = opts.hookPath || '/fronthook';
+
+		// If we weren't passed an express instance, we create one.
+		if (opts.server) {
+			listener = opts.server;
+		} else {
+			listener = express();
+
+			// Use body parser.
+			listener.use(bodyParser.urlencoded({ extended: true }));
+			listener.use(bodyParser.json());
+
+			httpServer = listener.listen(opts.port);
+		}
+
+		// Listen for Webhooks on the path specified by the client.
+		listener.post(hookPath, (req: express.Request, res: express.Response) => {
+			const eventPreview: EventPreview = req.body;
+
+			// Ensure that the sender is authorised and uses our secret.
+			if (!this.validateEventSignature(eventPreview, req.get('X-Front-Signature'))) {
+				res.sendStatus(401);
+				throw new Error('Event Signature does not match registered secret');
+			}
+
+			// Let the hook get on with it.
+			res.sendStatus(200);
+
+			// Queue up retrieval of the actual event. We need to queue these because
+			// we might otherwise receive them out of order.
+			addToEventQueue(eventPreview.id);
+		});
+
+		return httpServer;
 	}
 
 	private httpCall(details: Request, params: any, callback?: InternalCallback): Promise<any | void>  {
@@ -119,7 +209,7 @@ export class Front {
 				Authorization: `Bearer ${this.apiKey}`
 			},
 			json: true,
-			method: details.reqType,
+			method: details.method,
 			url: `${URL}/${this.formatPath(details.path, params)}`
 		};
 
@@ -163,16 +253,35 @@ export class Front {
 			const queryTags: { [key: string]: string } = {};
 
 			// Ensure we remove the optional signature.
+			// QueryString any tags that aren't the search string.
 			newPath = newPath.replace(trimmedTags, '');
 			_.each(tags, (tag) => {
-				if (data[tag]) {
+				if ((tag !== 'q') && data[tag]) {
 					queryTags[tag] = data[tag];
 				}
 			});
 			newPath = `${newPath}?${querystring.stringify(queryTags)}`;
+
+			// If we have a search string, append fully qualified string here.
+			if (_.includes(tags, 'q')) {
+				newPath += `&${data.q}`;
+			}
 		});
 
 		return newPath;
+	}
+
+	private validateEventSignature(data: any, signature: string): boolean {
+		let hash = '';
+		try {
+			hash = crypto.createHmac('sha1', this.apiSecret)
+				.update(JSON.stringify(data))
+				.digest('base64');
+		} catch (err) {
+			return false;
+		}
+
+		return hash === signature;
 	}
 }
 
@@ -222,6 +331,26 @@ export class FrontError extends TypedError {
 			});
 		}
 	}
+}
+
+export interface Event {
+	_links: Links;
+	id: string;
+	type: string;
+	emitted_at: number;
+	source: {
+		_meta: {
+			type: any;
+		};
+		data?: any;
+	};
+	target?: {
+		_meta: {
+			type: any;
+		};
+		data?: any;
+	};
+	conversation: Conversation;
 }
 
 export interface Links {
@@ -565,6 +694,14 @@ export namespace TopicRequest {
 }
 
 // Export Types ///////////////////////////////////////////////////////////////
+export type EventCallback = (error: Error | null, event?: Event) => void;
+
+export interface EventHookOptions {
+	server?: express.Application;
+	port?: number;
+	hookPath?: string;
+}
+
 export type RequestData =
 	CommentRequest.Create | CommentRequest.Get | CommentRequest.ListMentions |
 	ConversationRequest.List | ConversationRequest.Get | ConversationRequest.Update |
