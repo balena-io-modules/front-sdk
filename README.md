@@ -53,6 +53,44 @@ front.comment.create({
 });
 ```
 
+Clients can register for events, passing an object detailing a port to listen on using a new instance of an Express server, or an instance of an Express server to use. An optional path to install the webhook on can also be passed (this defaults to `/fronthook`).
+
+To use this functionality, pass the secret shared key in as the second parameter when creating a new Front instance.
+```typescript
+    import { Event, Front } from 'front-sdk';
+
+    const frontInst = new Front('abcdef123457890', 'secretkey');
+    const httpServer = frontInst.registerEvents({ port: 1234, path: '/myhook' }, (err: FrontError, event: Event) => {
+        if (err) {
+            console.log(err);
+        } else {
+            console.log(event);
+        }
+    });
+```
+
+You can also use a pre-existing Express instance, but note that the Front SDK expects that you have request body parsing of JSON enabled (as it will not do this for you). You can easily add this using the `body-parser` library:
+
+```typescript
+    import { Event, Front } from 'front-sdk';
+    import * as bodyParser from 'body-parser';
+
+    const app = express();
+    app.use(bodyParser.json());
+    app.listen(1234);
+
+    const frontInst = new Front('abcdef123457890', 'secretkey');
+    frontInst.registerEvents({ server: app, path: '/myhook' }, (err: FrontError, event: Event) => {
+        if (err) {
+            console.log(err);
+        } else {
+            console.log(event);
+        }
+    });
+```
+
+The SDK will verify that events sent to it are signed by the shared secret key, and will retrieve the entire event rather than just the preview. Events are sent to the client in the order the preview events for them were originally dispatched.
+
 #### Notes
 
 To post into a Front Inbox, you need to know the correct channels in for it.

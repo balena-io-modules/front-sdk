@@ -36,7 +36,7 @@ describe('Conversations', function () {
 		return frontInst.conversation.list({
 			limit: 1,
 			page: 1,
-			q: '[statuses]=unassigned',
+			q: 'q[statuses]=unassigned',
 		}).then(function (response: Conversations) {
 			response._pagination.should.exist;
 			response._pagination.should.have.keys('prev', 'next', 'limit');
@@ -113,7 +113,7 @@ describe('Conversations', function () {
 			response._links.should.exist;
 			response._links.should.have.key('self');
 			response._results.should.exist;
-			response._results.length.should.gte(1);
+			response._results.length.should.be.gte(1);
 			response._results.should.satisfy(function (results: Author[]) {
 				return _.find(results, ['username', keys.testAuthor]);
 			});
@@ -131,7 +131,7 @@ describe('Conversations', function () {
 			response._links.should.exist;
 			response._links.should.have.key('self');
 			response._results.should.exist;
-			response._results.length.should.gt(1);
+			response._results.length.should.be.gt(1);
 			response._results.should.satisfy(function (results: Message[]) {
 				return _.find(results, ['body', keys.testMessageResponse]);
 			});
