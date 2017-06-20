@@ -60,7 +60,7 @@ To use this functionality, pass the secret shared key in as the second parameter
     import { Event, Front } from 'front-sdk';
 
     const frontInst = new Front('abcdef123457890', 'secretkey');
-    const httpServer = frontInst.registerEvents({ port: 1234, path: '/myhook' }, (err: FrontError, event: Event) => {
+    const httpServer = frontInst.registerEvents({ port: 1234, hookPath: '/myhook' }, (err: FrontError, event: Event) => {
         if (err) {
             console.log(err);
         } else {
@@ -80,7 +80,7 @@ You can also use a pre-existing Express instance, but note that the Front SDK ex
     app.listen(1234);
 
     const frontInst = new Front('abcdef123457890', 'secretkey');
-    frontInst.registerEvents({ server: app, path: '/myhook' }, (err: FrontError, event: Event) => {
+    frontInst.registerEvents({ server: app, hookPath: '/myhook' }, (err: FrontError, event: Event) => {
         if (err) {
             console.log(err);
         } else {
