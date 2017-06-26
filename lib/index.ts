@@ -76,7 +76,7 @@ export class Front {
 			this.httpCall({ method: 'GET', path: 'conversations/<conversation_id>/messages[page:limit]' },
 			params, callback),
 		update: (params: ConversationRequest.Update, callback?: Callback<void>): Promise<void> =>
-			this.httpCall({ method: 'PATCH', path: 'conversations/<conversation_id}' }, params, callback),
+			this.httpCall({ method: 'PATCH', path: 'conversations/<conversation_id>' }, params, callback),
 	};
 
 	public inbox = {
@@ -186,7 +186,8 @@ export class Front {
 			const eventPreview: EventPreview = req.body;
 
 			// Ensure that the sender is authorised and uses our secret.
-			if (!this.validateEventSignature(eventPreview, req.get('X-Front-Signature'))) {
+			const XFrontSignature = req.get('X-Front-Signature');
+			if (!XFrontSignature || !this.validateEventSignature(eventPreview, XFrontSignature)) {
 				res.sendStatus(401);
 				throw new Error('Event Signature does not match registered secret');
 			}

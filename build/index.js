@@ -49,7 +49,7 @@ var Front = (function () {
                 return _this.httpCall({ method: 'GET', path: 'conversations/<conversation_id>/messages[page:limit]' }, params, callback);
             },
             update: function (params, callback) {
-                return _this.httpCall({ method: 'PATCH', path: 'conversations/<conversation_id}' }, params, callback);
+                return _this.httpCall({ method: 'PATCH', path: 'conversations/<conversation_id>' }, params, callback);
             },
         };
         this.inbox = {
@@ -133,7 +133,8 @@ var Front = (function () {
         }
         listener.post(hookPath, function (req, res) {
             var eventPreview = req.body;
-            if (!_this.validateEventSignature(eventPreview, req.get('X-Front-Signature'))) {
+            var XFrontSignature = req.get('X-Front-Signature');
+            if (!XFrontSignature || !_this.validateEventSignature(eventPreview, XFrontSignature)) {
                 res.sendStatus(401);
                 throw new Error('Event Signature does not match registered secret');
             }
