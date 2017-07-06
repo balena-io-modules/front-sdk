@@ -717,7 +717,7 @@ export type RequestData =
 export type ResponseData =
 	Attachment | Author | Links | Recipient | Sender | Tag | ConversationReference |
 	Comment | CommentMentions |
-	Conversation | Conversations | ConversationInboxes | ConversationFollowers |
+	Conversation | Conversations | ConversationComments | ConversationInboxes | ConversationFollowers |
 		ConversationMessages |
 	Inbox | Inboxes | InboxCreation | InboxChannels | InboxConversations |
 		InboxTeammates |
