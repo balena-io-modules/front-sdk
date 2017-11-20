@@ -132,7 +132,7 @@ var Front = (function () {
             httpServer = listener.listen(opts.port);
         }
         listener.post(hookPath, function (req, res) {
-            var eventPreview = req.body;
+            var eventPreview = (typeof (req.body) === 'string') ? JSON.parse(req.body) : req.body;
             var XFrontSignature = req.get('X-Front-Signature');
             if (!XFrontSignature || !_this.validateEventSignature(eventPreview, XFrontSignature)) {
                 res.sendStatus(401);

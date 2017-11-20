@@ -183,7 +183,7 @@ export class Front {
 
 		// Listen for Webhooks on the path specified by the client.
 		listener.post(hookPath, (req: express.Request, res: express.Response) => {
-			const eventPreview: EventPreview = req.body;
+			const eventPreview: EventPreview = (typeof(req.body) === 'string') ? JSON.parse(req.body) : req.body;
 
 			// Ensure that the sender is authorised and uses our secret.
 			const XFrontSignature = req.get('X-Front-Signature');
