@@ -69,7 +69,7 @@ To use this functionality, pass the secret shared key in as the second parameter
     });
 ```
 
-You can also use a pre-existing Express instance, but note that the Front SDK expects that you have request body parsing of JSON enabled (as it will not do this for you). You can easily add this using the `body-parser` library:
+You can also use a pre-existing Express instance, but note that the Front SDK expects that the request body should be an already parsed object or a JSON parseable string. You can easily add this using the `body-parser` library:
 
 ```typescript
     import { Event, Front } from 'front-sdk';
