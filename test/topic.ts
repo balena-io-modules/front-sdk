@@ -36,7 +36,6 @@ describe('Topics', function () {
 		}).catch(FrontError, (error: FrontError) => {
 			error.name.should.eq('FrontError');
 			error.status.should.eq(404);
-			error.title.should.eq('Resource not found');
 		});
 	});
 
@@ -54,7 +53,7 @@ describe('Topics', function () {
 			return frontInst.topic.listConversations({ topic_id: topicId });
 		}).then((response: TopicConversations) => {
 			response._pagination.should.exist;
-			response._pagination.should.have.keys('prev', 'next', 'limit');
+			response._pagination.should.have.keys('prev', 'next');
 			response._links.should.exist;
 			response._links.should.have.key('self');
 			response._results.should.exist;

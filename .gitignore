@@ -43,3 +43,5 @@ _dev_notes
 
 # package-lock
 package-lock.json
+
+test/creds.json

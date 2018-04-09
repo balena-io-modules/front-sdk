@@ -16,7 +16,6 @@ describe('Login', function () {
 			err.name.should.eq('FrontError');
 			err.status.should.eq(401);
 			err.title.should.eq('Unauthenticated');
-			err.message.should.eq('Provided token is not a JSON Web Token');
 		});
 	});
 });

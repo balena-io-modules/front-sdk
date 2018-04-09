@@ -1,0 +1,14 @@
+{
+  "apiKey": "blah.blah.blah",
+  "testAuthor": "blah",
+  "testAuthorId": "tea_blah",
+  "testChannel": "cha_blah",
+  "testConversationId": "cnv_blah",
+  "testCommentId": "com_blah",
+  "testInbox": "Blah",
+  "testTopicIssue": {
+    "owner": "blah",
+    "repo": "blah",
+    "issue": 123
+  }
+}

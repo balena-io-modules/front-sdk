@@ -57,6 +57,17 @@ export class Front {
 			params, callback),
 	};
 
+	public contact = {
+		create: (params: ContactRequest.Create, callback?: Callback<Contact>): Promise<Contact> =>
+			this.httpCall({ method: 'POST', path: '/contacts' }, params, callback),
+		delete: (params: ContactRequest.Delete, callback?: Callback<void>): Promise<void> =>
+			this.httpCall({ method: 'DELETE', path: 'contacts/<contact_id>' }, params, callback),
+		get: (params: ContactRequest.Get, callback?: Callback<Contact>): Promise<Contact> =>
+			this.httpCall({ method: 'GET', path: 'contacts/<contact_id>' }, params, callback),
+		update: (params: ContactRequest.Update, callback?: Callback<void>): Promise<void> =>
+			this.httpCall({ method: 'PATCH', path: 'contacts/<contact_id>' }, params, callback),
+	};
+
 	public conversation = {
 		get: (params: ConversationRequest.Get, callback?: Callback<Conversation>): Promise<Conversation> =>
 			this.httpCall({ method: 'GET', path: 'conversations/<conversation_id>'}, params, callback),
@@ -75,6 +86,8 @@ export class Front {
 			callback?: Callback<ConversationMessages>): Promise<ConversationMessages> =>
 			this.httpCall({ method: 'GET', path: 'conversations/<conversation_id>/messages[page:limit]' },
 			params, callback),
+		listRecent: (callback?: Callback<Conversations>): Promise<Conversations> =>
+			this.httpCall({ method: 'GET', path: 'conversations' }, null, callback),
 		update: (params: ConversationRequest.Update, callback?: Callback<void>): Promise<void> =>
 			this.httpCall({ method: 'PATCH', path: 'conversations/<conversation_id>' }, params, callback),
 	};
@@ -108,6 +121,15 @@ export class Front {
 		send: (params: MessageRequest.Send, callback?: Callback<ConversationReference>):
 			Promise<ConversationReference> => this.httpCall({ method: 'POST',
 			path: 'channels/<channel_id>/messages' }, params, callback),
+	};
+
+	public teammate = {
+		get: (params: TeammateRequest.Get, callback?: Callback<Teammate>): Promise<Teammate> =>
+			this.httpCall({ method: 'GET', path: 'teammates/<teammate_id>' }, params, callback),
+		list: (callback?: Callback<Teammates>): Promise<Teammates> =>
+			this.httpCall({ method: 'GET', path: 'teammates' }, null, callback),
+		update: (params: TeammateRequest.Update, callback?: Callback<void>): Promise<void> =>
+			this.httpCall({ method: 'PATCH', path: 'teammates/<teammate_id>' }, params, callback),
 	};
 
 	public topic = {
@@ -201,6 +223,12 @@ export class Front {
 		});
 
 		return httpServer;
+	}
+
+	// Utility method for occasions where we have the actual url, eg `_links`
+	public getFromLink(url: string, callback?: Callback<Object>): Promise<Object> {
+		const path = url.replace(URL, '');
+		return this.httpCall({ method: 'GET', path }, null, callback);
 	}
 
 	private httpCall(details: Request, params: any, callback?: InternalCallback): Promise<any | void>  {
@@ -450,6 +478,71 @@ export namespace CommentRequest {
 	}
 }
 
+// Contacts ///////////////////////////////////////////////////////////////////
+export interface Contact {
+	_links: Links;
+	id: string;
+	name: string;
+	description: string;
+	avatar_url: string;
+	is_spammer: boolean;
+	links: string[];
+	handles: Array<{
+		handle: string;
+		source: string;
+	}>;
+	groups: Array<{
+		_links: Links;
+		id: string;
+		name: string;
+		is_private: boolean;
+	}>;
+	updated_at: number;
+	custom_fields: {
+		[key: string]: string
+	};
+	is_private: boolean;
+};
+
+export namespace ContactRequest {
+	// Request structures /////////////////////////////////////////////////////
+	export interface Create {
+		handles: Array<{
+			handle: string;
+			source: string;
+		}>;
+		name?: string;
+		description?: string;
+		is_spammer?: boolean;
+		links?: string[];
+		group_names?: string[];
+		custom_fields?: {
+			[key: string]: string;
+		};
+	}
+
+	export interface Get {
+		contact_id: string;
+	}
+
+	export interface Update {
+		contact_id: string;
+		name?: string;
+		description?: string;
+		avatar?: string;
+		is_spammer?: boolean;
+		links?: string[];
+		group_names?: string[];
+		custom_fields?: {
+			[key: string]: string;
+		};
+	}
+
+	export interface Delete {
+		contact_id: string;
+	}
+}
+
 // Conversations //////////////////////////////////////////////////////////////
 export interface Conversation {
 	_links: Links;
@@ -674,6 +767,30 @@ export namespace MessageRequest {
 		body_format?: string;
 		metadata?: any;
 		[key: string]: string | any | void;
+	}
+}
+
+// Teammates //////////////////////////////////////////////////////////////////
+export type Teammate = Author;
+
+export interface Teammates {
+	_links: Links;
+	_results: Teammate[];
+}
+
+export namespace TeammateRequest {
+	// Request structures /////////////////////////////////////////////////////
+	export interface Get {
+		teammate_id: string;
+	}
+
+	export interface Update {
+		teammate_id: string;
+		username?: string;
+		first_name?: string;
+		last_name?: string;
+		is_admin?: boolean;
+		is_available?: boolean;
 	}
 }
 

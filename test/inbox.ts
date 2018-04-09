@@ -109,7 +109,7 @@ describe('Inboxes', function () {
 			response._pagination.should.include.keys('next', 'prev');
 			response._links.should.exist;
 			response._links.self.should.startWith(`${apiUrl}/inboxes/${keys.testInboxId}/conversations`);
-			response._links.self.should.include('q[statuses][0]=unassigned&q[statuses][1]=assigned');
+			response._links.self.should.include('q[statuses][]=unassigned&q[statuses][]=assigned');
 			response._results.should.exist;
 			response._results.length.should.be.gt(1);
 		});
@@ -125,7 +125,7 @@ describe('Inboxes', function () {
 			response._links.should.exist;
 			response._links.self.should.startWith(`${apiUrl}/inboxes/${keys.testInboxId}/teammates`);
 			response._results.should.exist;
-			response._results.length.should.be.gt(1);
+			response._results.length.should.be.gte(1);
 			const testAuthor: Author | undefined = _.find(response._results, ['username', keys.testAuthor ]);
 			if (!testAuthor) {
 				throw new Error('Author for test inbox could not be found');
