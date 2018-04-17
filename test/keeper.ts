@@ -1,10 +1,10 @@
 export interface TestKeys {
 	apiKey: string;
 	testAuthor: string;
-	testAuthorId?: string;
+	testAuthorId: string;
 	testChannel: string;
-	testConversationId?: string;
-	testCommentId?: string;
+	testConversationId: string;
+	testCommentId: string;
 	testInbox: string;
 	testInboxId?: string;
 	testMessageId?: string;

@@ -260,5 +260,3 @@ var FrontError = (function (_super) {
 }(TypedError));
 exports.FrontError = FrontError;
 ;
-
-//# sourceMappingURL=index.js.map

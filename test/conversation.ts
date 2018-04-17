@@ -24,7 +24,7 @@ describe('Conversations', function () {
 	it('should list all conversations', function () {
 		return frontInst.conversation.list().then(function (response: Conversations) {
 			response._pagination.should.exist;
-			response._pagination.should.have.keys('prev', 'next', 'limit');
+			response._pagination.should.have.keys('prev', 'next');
 			response._links.should.exist;
 			response._links.should.have.key('self');
 			response._results.should.exist;
@@ -39,12 +39,19 @@ describe('Conversations', function () {
 			q: 'q[statuses]=unassigned',
 		}).then(function (response: Conversations) {
 			response._pagination.should.exist;
-			response._pagination.should.have.keys('prev', 'next', 'limit');
-			response._pagination.limit.should.eq(1);
+			response._pagination.should.have.keys('prev', 'next');
 			response._links.should.exist;
 			response._links.should.have.key('self');
 			response._results.should.exist;
 			response._results.length.should.be.eq(1);
+		});
+	});
+
+	// API docs, at the moment, list a default pagination of 50, but this test doesn't assume that is stringent.
+	it('should list a decent quantity of recent conversations', function () {
+		return frontInst.conversation.listRecent().then(function (response: Conversations) {
+			response._results.should.exist;
+			response._results.length.should.be.gt(9);
 		});
 	});
 
@@ -127,7 +134,7 @@ describe('Conversations', function () {
 		return frontInst.conversation.listMessages({ conversation_id: keys.testConversationId })
 		.then(function (response: ConversationMessages) {
 			response._pagination.should.exist;
-			response._pagination.should.have.keys('prev', 'next', 'limit');
+			response._pagination.should.have.keys('prev', 'next');
 			response._links.should.exist;
 			response._links.should.have.key('self');
 			response._results.should.exist;
