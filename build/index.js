@@ -172,7 +172,7 @@ var Front = (function () {
         return httpServer;
     };
     Front.prototype.getFromLink = function (url, callback) {
-        var path = url.replace(URL, '');
+        var path = url.replace(URL, '').replace(/^\//, '');
         return this.httpCall({ method: 'GET', path: path }, null, callback);
     };
     Front.prototype.httpCall = function (details, params, callback) {
