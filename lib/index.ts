@@ -227,7 +227,8 @@ export class Front {
 
 	// Utility method for occasions where we have the actual url, eg `_links`
 	public getFromLink(url: string, callback?: Callback<Object>): Promise<Object> {
-		const path = url.replace(URL, '');
+		// This prunes the API url and any leading / from a path to request
+		const path = url.replace(URL, '').replace(/^\//, '');
 		return this.httpCall({ method: 'GET', path }, null, callback);
 	}
 
