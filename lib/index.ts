@@ -246,18 +246,16 @@ export class Front {
 
 		// Make the request.
 		return request(requestOpts).promise().catch((error: any) => {
-			// Format this into something useful, if we can.
-			const responseError = new FrontError(error);
-
 			// Retry a couple of times if we get 5XX errors, as Front
 			// can get quite unreliable sometimes
-			if (/^5\d\d/.test(responseError.message) && retries < 5) {
+			if (error.statusCode >= 500 && retries < 5) {
 				return Promise.delay(300).then(() => {
 					return this.httpCall(details, params, callback, retries + 1);
 				});
 			}
 
-			throw responseError;
+			// Format this into something useful, if we can.
+			throw new FrontError(error);
 		}).asCallback(callback);
 	}
 
