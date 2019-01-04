@@ -234,14 +234,17 @@ export class Front {
 
 	private httpCall(details: Request, params: any, callback?: InternalCallback, retries: number = 0):
 		Promise<any | void>	{
+		const url = `${URL}/${this.formatPath(details.path, params)}`;
+		const body = params || {};
+
 		const requestOpts = {
-			body: params || {},
+			body,
 			headers: {
 				Authorization: `Bearer ${this.apiKey}`
 			},
 			json: true,
 			method: details.method,
-			url: `${URL}/${this.formatPath(details.path, params)}`
+			url
 		};
 
 		// Make the request.
@@ -255,6 +258,7 @@ export class Front {
 			}
 
 			// Format this into something useful, if we can.
+			error.message += ` at ${url} with body ${JSON.stringify(body)}`;
 			throw new FrontError(error);
 		}).asCallback(callback);
 	}
