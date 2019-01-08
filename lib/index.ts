@@ -258,8 +258,9 @@ export class Front {
 			}
 
 			// Format this into something useful, if we can.
-			error.message += ` at ${url} with body ${JSON.stringify(body)}`;
-			throw new FrontError(error);
+			const frontError = new FrontError(error);
+			frontError.message += ` at ${url} with body ${JSON.stringify(body)}`;
+			throw frontError;
 		}).asCallback(callback);
 	}
 
