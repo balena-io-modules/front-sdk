@@ -116,10 +116,10 @@ export class Front {
 		receiveCustom: (params: MessageRequest.ReceiveCustom,
 			callback?: Callback<ConversationReference>): Promise<ConversationReference> =>
 			this.httpCall({ method: 'POST', path: 'channels/<channel_id>/incoming_messages' }, params, callback),
-		reply: (params: MessageRequest.Reply, callback?: Callback<Status>): Promise<Status> =>
+		reply: (params: MessageRequest.Reply, callback?: Callback<Message>): Promise<Message> =>
 			this.httpCall({ method: 'POST', path: 'conversations/<conversation_id>/messages' }, params, callback),
-		send: (params: MessageRequest.Send, callback?: Callback<ConversationReference>):
-			Promise<ConversationReference> => this.httpCall({ method: 'POST',
+		send: (params: MessageRequest.Send, callback?: Callback<Message>):
+			Promise<Message> => this.httpCall({ method: 'POST',
 			path: 'channels/<channel_id>/messages' }, params, callback),
 	};
 
@@ -566,7 +566,7 @@ export interface Conversation {
 	status: string;
 	assignee: Author;
 	recipient: Recipient;
-	tags: Tag[] | void;
+	tags: Tag[];
 	last_message: Message;
 	created_at: number;
 }
@@ -724,6 +724,8 @@ export interface Message {
 	id: string;
 	type: string;
 	is_inbound: boolean;
+	is_draft: boolean;
+	error_type?: string;
 	created_at: number;
 	blurb: string;
 	author: Author;
