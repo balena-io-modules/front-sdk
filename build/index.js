@@ -74,6 +74,7 @@ var Front = (function () {
             create: function (params, callback) {
                 return _this.httpCall({ method: 'POST', path: 'inboxes' }, params, callback);
             },
+            createChannel: function (params, callback) { return _this.httpCall({ method: 'POST', path: 'inboxes/<inbox_id>/channels' }, params, callback); },
             get: function (params, callback) {
                 return _this.httpCall({ method: 'GET', path: 'inboxes/<inbox_id>' }, params, callback);
             },

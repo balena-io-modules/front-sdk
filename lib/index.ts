@@ -95,6 +95,9 @@ export class Front {
 	public inbox = {
 		create: (params: InboxRequest.Create, callback?: Callback<InboxCreation>): Promise<InboxCreation> =>
 			this.httpCall({ method: 'POST', path: 'inboxes' }, params, callback),
+		createChannel: (params: InboxRequest.CreateChannel, callback?: Callback<Channel>):
+			Promise<Channel> => this.httpCall({ method: 'POST', path: 'inboxes/<inbox_id>/channels' },
+			params, callback),
 		get: (params: InboxRequest.Get, callback?: Callback<Inbox>): Promise<Inbox> =>
 			this.httpCall({ method: 'GET', path: 'inboxes/<inbox_id>' }, params, callback),
 		list: (callback?: Callback<Inboxes>): Promise<Inboxes> =>
@@ -692,6 +695,14 @@ export namespace InboxRequest {
 		name: string;
 		teammate_ids?: string[];
 		[key: string]: string | string[] | void;
+	}
+
+	export interface CreateChannel {
+		inbox_id: string;
+		type: 'smtp' | 'imap' | 'twilio' | 'twitter' | 'facebook' | 'smooch' | 'intercom' | 'truly' | 'custom';
+		settings: {
+			webhook_url: string;
+		};
 	}
 
 	export interface Get {
