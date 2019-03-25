@@ -1,9 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var GithubApi = require("@octokit/rest");
 var Promise = require("bluebird");
 var chai = require("chai");
 var ChaiAsPromised = require("chai-as-promised");
+var GithubApi = require("github");
 require("mocha");
 var index_1 = require("../lib/index");
 var keeper_1 = require("./keeper");
@@ -66,3 +66,5 @@ describe('Topics', function () {
         });
     });
 });
+
+//# sourceMappingURL=topic.js.map

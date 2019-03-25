@@ -35,7 +35,6 @@ describe('Conversations', function () {
 	it('should list all unassigned conversations with a 1 entry per page limit', function () {
 		return frontInst.conversation.list({
 			limit: 1,
-			page: 1,
 			q: 'q[statuses]=unassigned',
 		}).then(function (response: Conversations) {
 			response._pagination.should.exist;

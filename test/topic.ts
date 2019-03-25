@@ -1,9 +1,9 @@
 // Needed due to chai's should.exist
 /* tslint:disable: no-unused-expression */
+import * as GithubApi from '@octokit/rest';
 import * as Promise from 'bluebird';
 import * as chai from 'chai';
 import * as ChaiAsPromised from 'chai-as-promised';
-import * as GithubApi from 'github';
 import 'mocha';
 import { Conversation, Front, FrontError, TopicConversations } from '../lib/index';
 import { getKeeper } from './keeper';
@@ -47,7 +47,7 @@ describe('Topics', function () {
 		}).then((issue) => {
 			issue.data.body.should.exist;
 			const bodyText = issue.data.body;
-			const frontTopic = bodyText.match(/\[.*]\((.*)\)/m)[1];
+			const frontTopic = bodyText.match(/\[.*]\((.*)\)/m)![1];
 			const topicId = frontTopic.slice(frontTopic.lastIndexOf('/') + 1);
 
 			return frontInst.topic.listConversations({ topic_id: topicId });

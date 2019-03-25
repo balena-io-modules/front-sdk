@@ -1,8 +1,11 @@
 "use strict";
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
@@ -50,7 +53,7 @@ var Front = (function () {
                 return _this.httpCall({ method: 'GET', path: 'conversations/<conversation_id>' }, params, callback);
             },
             list: function (params, callback) {
-                return _this.httpCall({ method: 'GET', path: 'conversations[q:page:limit]' }, params, callback);
+                return _this.httpCall({ method: 'GET', path: 'conversations[q:page_token:limit]' }, params, callback);
             },
             listComments: function (params, callback) { return _this.httpCall({ method: 'GET',
                 path: 'conversations/<conversation_id>/comments' }, params, callback); },
@@ -61,7 +64,7 @@ var Front = (function () {
                 return _this.httpCall({ method: 'GET', path: 'conversations/<conversation_id>/inboxes' }, params, callback);
             },
             listMessages: function (params, callback) {
-                return _this.httpCall({ method: 'GET', path: 'conversations/<conversation_id>/messages[page:limit]' }, params, callback);
+                return _this.httpCall({ method: 'GET', path: 'conversations/<conversation_id>/messages[page_token:limit]' }, params, callback);
             },
             listRecent: function (callback) {
                 return _this.httpCall({ method: 'GET', path: 'conversations' }, null, callback);
@@ -74,6 +77,7 @@ var Front = (function () {
             create: function (params, callback) {
                 return _this.httpCall({ method: 'POST', path: 'inboxes' }, params, callback);
             },
+            createChannel: function (params, callback) { return _this.httpCall({ method: 'POST', path: 'inboxes/<inbox_id>/channels' }, params, callback); },
             get: function (params, callback) {
                 return _this.httpCall({ method: 'GET', path: 'inboxes/<inbox_id>' }, params, callback);
             },
@@ -82,7 +86,7 @@ var Front = (function () {
             },
             listChannels: function (params, callback) { return _this.httpCall({ method: 'GET', path: 'inboxes/<inbox_id>/channels' }, params, callback); },
             listConversations: function (params, callback) { return _this.httpCall({ method: 'GET',
-                path: 'inboxes/<inbox_id>/conversations[q:page:limit]' }, params, callback); },
+                path: 'inboxes/<inbox_id>/conversations[q:page_token:limit]' }, params, callback); },
             listTeammates: function (params, callback) { return _this.httpCall({ method: 'GET', path: 'inboxes/<inbox_id>/teammates' }, params, callback); },
         };
         this.message = {
@@ -111,7 +115,7 @@ var Front = (function () {
         };
         this.topic = {
             listConversations: function (params, callback) { return _this.httpCall({ method: 'GET',
-                path: 'topics/<topic_id>/conversations[q:page:limit]' }, params, callback); },
+                path: 'topics/<topic_id>/conversations[q:page_token:limit]' }, params, callback); },
         };
         this.apiKey = apiKey;
         if (apiSecret) {

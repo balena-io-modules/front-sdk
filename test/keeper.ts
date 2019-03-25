@@ -31,7 +31,13 @@ export class VaultKeeper {
 	}
 }
 
-const keeper = new VaultKeeper(process.env.FRONT_TEST_KEYS);
+const frontTestKeys = process.env.FRONT_TEST_KEYS;
+
+if (!frontTestKeys) {
+	throw new Error('Critical environment variable `FRONT_TEST_KEYS` is missing');
+}
+
+const keeper = new VaultKeeper(frontTestKeys);
 
 export function getKeeper() {
 	return keeper;

@@ -102,7 +102,6 @@ describe('Inboxes', function () {
 		}
 		return frontInst.inbox.listConversations({
 			inbox_id: keys.testInboxId,
-			page: 1,
 			q: 'q[statuses][]=unassigned&q[statuses][]=assigned'
 		}).then(function (response: InboxConversations) {
 			response._pagination.should.exist;
