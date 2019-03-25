@@ -10,6 +10,7 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
+var Promise = require("bluebird");
 var bodyParser = require("body-parser");
 var crypto = require("crypto");
 var express = require("express");
@@ -175,18 +176,29 @@ var Front = (function () {
         var path = url.replace(URL, '').replace(/^\//, '');
         return this.httpCall({ method: 'GET', path: path }, null, callback);
     };
-    Front.prototype.httpCall = function (details, params, callback) {
+    Front.prototype.httpCall = function (details, params, callback, retries) {
+        var _this = this;
+        if (retries === void 0) { retries = 0; }
+        var url = URL + "/" + this.formatPath(details.path, params);
+        var body = params || {};
         var requestOpts = {
-            body: params || {},
+            body: body,
             headers: {
                 Authorization: "Bearer " + this.apiKey
             },
             json: true,
             method: details.method,
-            url: URL + "/" + this.formatPath(details.path, params)
+            url: url
         };
         return request(requestOpts).promise().catch(function (error) {
-            throw new FrontError(error);
+            if (error.statusCode >= 500 && retries < 5) {
+                return Promise.delay(300).then(function () {
+                    return _this.httpCall(details, params, callback, retries + 1);
+                });
+            }
+            var frontError = new FrontError(error);
+            frontError.message += " at " + url + " with body " + JSON.stringify(body);
+            throw frontError;
         }).asCallback(callback);
     };
     Front.prototype.formatPath = function (path, data) {
