@@ -72,7 +72,7 @@ export class Front {
 		get: (params: ConversationRequest.Get, callback?: Callback<Conversation>): Promise<Conversation> =>
 			this.httpCall({ method: 'GET', path: 'conversations/<conversation_id>'}, params, callback),
 		list: (params?: ConversationRequest.List, callback?: Callback<Conversations>): Promise<Conversations> =>
-			this.httpCall({ method: 'GET', path: 'conversations[q:page:limit]' }, params, callback),
+			this.httpCall({ method: 'GET', path: 'conversations[q:page_token:limit]' }, params, callback),
 		listComments: (params: ConversationRequest.ListComments, callback?: Callback<ConversationComments>):
 			Promise<ConversationComments> => this.httpCall({ method: 'GET',
 			path: 'conversations/<conversation_id>/comments' }, params, callback),
@@ -84,7 +84,7 @@ export class Front {
 			this.httpCall({ method: 'GET', path: 'conversations/<conversation_id>/inboxes' }, params, callback),
 		listMessages: (params: ConversationRequest.ListMessages,
 			callback?: Callback<ConversationMessages>): Promise<ConversationMessages> =>
-			this.httpCall({ method: 'GET', path: 'conversations/<conversation_id>/messages[page:limit]' },
+			this.httpCall({ method: 'GET', path: 'conversations/<conversation_id>/messages[page_token:limit]' },
 			params, callback),
 		listRecent: (callback?: Callback<Conversations>): Promise<Conversations> =>
 			this.httpCall({ method: 'GET', path: 'conversations' }, null, callback),
@@ -107,7 +107,7 @@ export class Front {
 			params, callback),
 		listConversations: (params: InboxRequest.ListConversations, callback?: Callback<InboxConversations>):
 			Promise<InboxConversations> => this.httpCall({ method: 'GET',
-			path: 'inboxes/<inbox_id>/conversations[q:page:limit]' }, params, callback),
+			path: 'inboxes/<inbox_id>/conversations[q:page_token:limit]' }, params, callback),
 		listTeammates: (params: InboxRequest.ListTeammates, callback?: Callback<InboxTeammates>):
 			Promise<InboxTeammates> => this.httpCall({ method: 'GET', path: 'inboxes/<inbox_id>/teammates' },
 			params, callback),
@@ -138,7 +138,7 @@ export class Front {
 	public topic = {
 		listConversations: (params: TopicRequest.ListConversations, callback?: Callback<TopicConversations>):
 		Promise<TopicConversations> => this.httpCall({ method: 'GET',
-			path: 'topics/<topic_id>/conversations[q:page:limit]' }, params, callback),
+			path: 'topics/<topic_id>/conversations[q:page_token:limit]' }, params, callback),
 	};
 
 	// Keys for Front access and event verification.
@@ -608,7 +608,7 @@ export namespace ConversationRequest {
 	// Request structures /////////////////////////////////////////////////////
 	export interface List {
 		q?: string;
-		page?: number;
+		page_token?: number;
 		limit?: number;
 		[key: string]: string | number | void;
 	}
@@ -644,7 +644,7 @@ export namespace ConversationRequest {
 
 	export interface ListMessages {
 		conversation_id: string;
-		page?: number;
+		page_token?: number;
 		limit?: number;
 		[key: string]: string | number | void;
 	}
@@ -718,7 +718,7 @@ export namespace InboxRequest {
 	export interface ListConversations {
 		inbox_id: string;
 		q?: string;
-		page?: number;
+		page_token?: number;
 		limit?: number;
 		[key: string]: string | number | void;
 	}
@@ -833,7 +833,7 @@ export namespace TopicRequest {
 	export interface ListConversations {
 		topic_id: string;
 		q?: string;
-		page?: number;
+		page_token?: number;
 		limit?: number;
 		[key: string]: string | number | void;
 	}

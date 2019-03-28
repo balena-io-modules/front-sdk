@@ -130,3 +130,5 @@ describe('Conversations', function () {
         });
     });
 });
+
+//# sourceMappingURL=conversation.js.map

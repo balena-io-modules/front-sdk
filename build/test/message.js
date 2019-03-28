@@ -96,3 +96,5 @@ describe('Messages', function () {
         });
     });
 });
+
+//# sourceMappingURL=message.js.map

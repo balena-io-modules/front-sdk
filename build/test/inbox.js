@@ -117,3 +117,5 @@ describe('Inboxes', function () {
         });
     });
 });
+
+//# sourceMappingURL=inbox.js.map

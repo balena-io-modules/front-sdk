@@ -4,8 +4,7 @@ import * as Promise from 'bluebird';
 import * as chai from 'chai';
 import * as ChaiAsPromised from 'chai-as-promised';
 import 'mocha';
-import { Conversation, ConversationReference, Front, Message,
-	Status } from '../lib/index';
+import { Conversation, ConversationReference, Front, Message, } from '../lib/index';
 import { getKeeper } from './keeper';
 
 chai.use(ChaiAsPromised);
@@ -33,11 +32,8 @@ describe('Messages', function () {
 			channel_id: keys.testChannel,
 			subject: keys.testMessageSubject,
 			to: [ keys.testAuthorId ],
-		}).then(function (response: ConversationReference) {
-			response.conversation_reference.should.exist;
-			if (response.status) {
-				response.status.should.eq('accepted');
-			}
+		}).then(function (response: Message) {
+			response.should.exist;
 		});
 	});
 
@@ -113,8 +109,8 @@ describe('Messages', function () {
 		return frontInst.message.reply({
 			body: keys.testMessageResponse,
 			conversation_id: keys.testConversationId,
-		}).then((response: Status) => {
-			response.status.should.eq('accepted');
+		}).then((response) => {
+			response.should.exist;
 		});
 	});
 });
