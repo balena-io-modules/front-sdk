@@ -608,7 +608,7 @@ export namespace ConversationRequest {
 	// Request structures /////////////////////////////////////////////////////
 	export interface List {
 		q?: string;
-		page_token?: number;
+		page_token?: string;
 		limit?: number;
 		[key: string]: string | number | void;
 	}
@@ -644,7 +644,7 @@ export namespace ConversationRequest {
 
 	export interface ListMessages {
 		conversation_id: string;
-		page_token?: number;
+		page_token?: string;
 		limit?: number;
 		[key: string]: string | number | void;
 	}
@@ -718,7 +718,7 @@ export namespace InboxRequest {
 	export interface ListConversations {
 		inbox_id: string;
 		q?: string;
-		page_token?: number;
+		page_token?: string;
 		limit?: number;
 		[key: string]: string | number | void;
 	}
@@ -833,7 +833,7 @@ export namespace TopicRequest {
 	export interface ListConversations {
 		topic_id: string;
 		q?: string;
-		page_token?: number;
+		page_token?: string;
 		limit?: number;
 		[key: string]: string | number | void;
 	}
