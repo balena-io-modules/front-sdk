@@ -89,7 +89,8 @@ export class Front {
 		listRecent: (callback?: Callback<Conversations>): Promise<Conversations> =>
 			this.httpCall({ method: 'GET', path: 'conversations' }, null, callback),
 		update: (params: ConversationRequest.Update, callback?: Callback<void>): Promise<void> =>
-			this.httpCall({ method: 'PATCH', path: 'conversations/<conversation_id>' }, params, callback),
+			this.httpCall({ method: 'PATCH', path: `conversations/${params.conversation_id}` },
+				_.omit(params, [ 'conversation_id' ]), callback),
 	};
 
 	public inbox = {
