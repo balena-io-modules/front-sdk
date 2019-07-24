@@ -36,7 +36,7 @@ var Front = (function () {
         };
         this.contact = {
             create: function (params, callback) {
-                return _this.httpCall({ method: 'POST', path: '/contacts' }, params, callback);
+                return _this.httpCall({ method: 'POST', path: 'contacts' }, params, callback);
             },
             delete: function (params, callback) {
                 return _this.httpCall({ method: 'DELETE', path: 'contacts/<contact_id>' }, params, callback);
@@ -70,7 +70,7 @@ var Front = (function () {
                 return _this.httpCall({ method: 'GET', path: 'conversations' }, null, callback);
             },
             update: function (params, callback) {
-                return _this.httpCall({ method: 'PATCH', path: 'conversations/<conversation_id>' }, params, callback);
+                return _this.httpCall({ method: 'PATCH', path: "conversations/" + params.conversation_id }, _.omit(params, ['conversation_id']), callback);
             },
         };
         this.inbox = {

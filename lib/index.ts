@@ -59,7 +59,7 @@ export class Front {
 
 	public contact = {
 		create: (params: ContactRequest.Create, callback?: Callback<Contact>): Promise<Contact> =>
-			this.httpCall({ method: 'POST', path: '/contacts' }, params, callback),
+			this.httpCall({ method: 'POST', path: 'contacts' }, params, callback),
 		delete: (params: ContactRequest.Delete, callback?: Callback<void>): Promise<void> =>
 			this.httpCall({ method: 'DELETE', path: 'contacts/<contact_id>' }, params, callback),
 		get: (params: ContactRequest.Get, callback?: Callback<Contact>): Promise<Contact> =>
