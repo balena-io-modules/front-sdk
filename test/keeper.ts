@@ -1,17 +1,5 @@
 export interface TestKeys {
 	apiKey: string;
-	testAuthor: string;
-	testAuthorId: string;
-	testAuthorEmail?: string;
-	testChannel: string;
-	testConversationId: string;
-	testCommentId: string;
-	testInbox: string;
-	testInboxId?: string;
-	testMessageId?: string;
-	testMessageConvRef?: string;
-	testMessageResponse?: string;
-	testMessageSubject?: string;
 	testTopicIssue: {
 		owner: string;
 		repo: string;

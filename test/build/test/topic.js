@@ -56,13 +56,13 @@ describe('Topics', function () {
             var conversation = response._results[0];
             conversation._links.should.exist;
             conversation._links.should.have.keys('self', 'related');
-            conversation.id.should.eq(keys.testConversationId);
-            conversation.subject.should.eq(keys.testMessageSubject);
+            conversation.id.should.eq(_this.global.testConversationId);
+            conversation.subject.should.eq(_this.global.testMessageSubject);
             conversation.status.should.exist;
             conversation.recipient.should.exist;
             conversation.last_message.should.exist;
             conversation.last_message.id.should.exist;
-            conversation.last_message.body.should.eq(keys.testMessageResponse);
+            conversation.last_message.body.should.eq(_this.global.testMessageResponse);
             conversation.created_at.should.exist;
         });
     });
