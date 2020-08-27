@@ -2,6 +2,7 @@ export interface TestKeys {
 	apiKey: string;
 	testAuthor: string;
 	testAuthorId: string;
+	testAuthorEmail?: string;
 	testChannel: string;
 	testConversationId: string;
 	testCommentId: string;

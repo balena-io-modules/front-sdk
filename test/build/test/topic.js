@@ -12,31 +12,32 @@ chai.should();
 describe('Topics', function () {
     var vaultKeeper = keeper_1.getKeeper();
     var keys = vaultKeeper.keys;
-    var frontInst;
     var githubInst;
     before(function () {
-        frontInst = new index_1.Front(keys.apiKey);
-        githubInst = new GithubApi({
+        githubInst = new GithubApi.Octokit({
             Promise: Promise,
             headers: {
                 Accept: 'application/vnd.github.loki-preview+json'
             },
             host: 'api.github.com',
             protocol: 'https',
-            timeout: 5000
+            request: {
+                timeout: 5000
+            }
         });
     });
     it('should return an empty results list for an invalid topic', function () {
-        return frontInst.topic.listConversations({ topic_id: 'top_xxxxx' }).then(function () {
+        return this.globals.front.topic.listConversations({ topic_id: 'top_xxxxx' }).then(function () {
             throw new Error('Received a result for an invalid topic');
         }).catch(index_1.FrontError, function (error) {
             error.name.should.eq('FrontError');
             error.status.should.eq(404);
         });
     });
-    it('should list all of conversations associated with a topic', function () {
+    it.skip('should list all of conversations associated with a topic', function () {
+        var _this = this;
         return githubInst.issues.get({
-            number: keys.testTopicIssue.issue,
+            issue_number: keys.testTopicIssue.issue,
             owner: keys.testTopicIssue.owner,
             repo: keys.testTopicIssue.repo,
         }).then(function (issue) {
@@ -44,7 +45,7 @@ describe('Topics', function () {
             var bodyText = issue.data.body;
             var frontTopic = bodyText.match(/\[.*]\((.*)\)/m)[1];
             var topicId = frontTopic.slice(frontTopic.lastIndexOf('/') + 1);
-            return frontInst.topic.listConversations({ topic_id: topicId });
+            return _this.globals.front.topic.listConversations({ topic_id: topicId });
         }).then(function (response) {
             response._pagination.should.exist;
             response._pagination.should.have.keys('prev', 'next');

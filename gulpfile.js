@@ -35,14 +35,14 @@ gulp.task('testBuild', () => {
 		.pipe(gulp.dest('./test/build'))
 });
 
-gulp.task('testRun', [ 'testBuild' ], () => {
+gulp.task('testRun', gulp.series('testBuild', () => {
 	let reporter = 'list';
 	if (process.env.JUNIT) {
 		reporter = 'mocha-junit-reporter';
 	}
-	gulp.src('./test/build/test/index.js', { read: false })
+	return gulp.src('./test/build/test/index.js', { read: false })
 		.pipe(mocha({ reporter: reporter, timeout: 10000 }))
-});
+}));
 
 gulp.task('tslint', () => {
 	const tsProject = getProject(true);
@@ -54,5 +54,5 @@ gulp.task('tslint', () => {
 		.pipe(tslint.report())
 });
 
-gulp.task('build', [ 'libBuild' ]);
-gulp.task('test', [ 'libBuild', 'testRun' ])
+gulp.task('build', gulp.series('libBuild'));
+gulp.task('test', gulp.series('libBuild', 'testRun'));

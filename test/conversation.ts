@@ -6,23 +6,14 @@ import * as _ from 'lodash';
 import 'mocha';
 import { Author, Comment, Conversation, ConversationComments,
 	ConversationFollowers, ConversationInboxes, ConversationMessages,
-	Conversations, Front, Message } from '../lib/index';
-import { getKeeper } from './keeper';
+	Conversations, Message } from '../lib/index';
 
 chai.use(ChaiAsPromised);
 chai.should();
 
 describe('Conversations', function () {
-	const vaultKeeper = getKeeper();
-	const keys = vaultKeeper.keys;
-	let frontInst: Front;
-
-	before(function () {
-		frontInst = new Front(keys.apiKey);
-	});
-
 	it('should list all conversations', function () {
-		return frontInst.conversation.list().then(function (response: Conversations) {
+		return this.globals.front.conversation.list().then(function (response: Conversations) {
 			response._pagination.should.exist;
 			response._pagination.should.have.keys('prev', 'next');
 			response._links.should.exist;
@@ -33,7 +24,7 @@ describe('Conversations', function () {
 	});
 
 	it('should list all unassigned conversations with a 1 entry per page limit', function () {
-		return frontInst.conversation.list({
+		return this.globals.front.conversation.list({
 			limit: 1,
 			q: 'q[statuses]=unassigned',
 		}).then(function (response: Conversations) {
@@ -48,98 +39,98 @@ describe('Conversations', function () {
 
 	// API docs, at the moment, list a default pagination of 50, but this test doesn't assume that is stringent.
 	it('should list a decent quantity of recent conversations', function () {
-		return frontInst.conversation.listRecent().then(function (response: Conversations) {
+		return this.globals.front.conversation.listRecent().then(function (response: Conversations) {
 			response._results.should.exist;
 			response._results.length.should.be.gt(9);
 		});
 	});
 
 	it('should get the conversation previously created in the Messages tests', function () {
-		if (!keys.testConversationId) {
+		if (!this.globals.testConversationId) {
 			throw new Error('Cannot find conversation ID');
 		}
-		return frontInst.conversation.get({ conversation_id: keys.testConversationId })
-		.then(function (response: Conversation) {
+		return this.globals.front.conversation.get({ conversation_id: this.globals.testConversationId })
+		.then((response: Conversation) => {
 			response._links.should.exist;
 			response._links.should.have.keys('self', 'related');
-			response.id.should.eq(keys.testConversationId);
-			response.subject.should.eq(keys.testMessageSubject);
+			response.id.should.eq(this.globals.testConversationId);
+			response.subject.should.contain(this.globals.testMessageSubject);
 			response.status.should.exist;
 			response.recipient.should.exist;
 			response.last_message.should.exist;
 			response.last_message.id.should.exist;
-			response.last_message.body.should.eq(keys.testMessageResponse);
+			response.last_message.body.should.eq(this.globals.testMessageResponse);
 			response.created_at.should.exist;
 		});
 	});
 
 	it('should list all the comments in the conversation', function () {
-		if (!keys.testConversationId) {
+		if (!this.globals.testConversationId) {
 			throw new Error('Cannot find conversation ID');
 		}
-		return frontInst.conversation.listComments({ conversation_id: keys.testConversationId })
-		.then(function (response: ConversationComments) {
+		return this.globals.front.conversation.listComments({ conversation_id: this.globals.testConversationId })
+		.then((response: ConversationComments) => {
 			response._pagination.should.exist;
 			response._pagination.should.have.keys('prev', 'next');
 			response._links.should.exist;
 			response._links.should.have.key('self');
 			response._results.should.exist;
 			response._results.length.should.be.gt(0);
-			response._results.should.satisfy(function (results: Comment[]) {
-				return _.find(results, ['id', keys.testCommentId]);
+			response._results.should.satisfy((results: Comment[]) => {
+				return _.find(results, ['id', this.globals.testCommentId]);
 			});
 		});
 	});
 
 	it('should list the inboxes in which the conversation appears', function () {
-		if (!keys.testConversationId) {
+		if (!this.globals.testConversationId) {
 			throw new Error('Cannot find conversation ID');
 		}
-		return frontInst.conversation.listInboxes({ conversation_id: keys.testConversationId })
-		.then(function (response: ConversationInboxes) {
+		return this.globals.front.conversation.listInboxes({ conversation_id: this.globals.testConversationId })
+		.then((response: ConversationInboxes) => {
 			response._pagination.should.exist;
 			response._pagination.should.have.keys('prev', 'next');
 			response._links.should.exist;
 			response._links.should.have.key('self');
 			response._results.should.exist;
 			response._results.length.should.eq(1);
-			response._results[0].id.should.eq(keys.testInboxId);
-			response._results[0].name.should.eq(keys.testInbox);
+			response._results[0].id.should.eq(this.globals.inbox.id);
+			response._results[0].name.should.eq(this.globals.inbox.name);
 		});
 	});
 
 	it('should list all the followers of a conversation', function() {
-		if (!keys.testConversationId) {
+		if (!this.globals.testConversationId) {
 			throw new Error('Cannot find conversation ID');
 		}
-		return frontInst.conversation.listFollowers({ conversation_id: keys.testConversationId })
-		.then(function (response: ConversationFollowers) {
+		return this.globals.front.conversation.listFollowers({ conversation_id: this.globals.testConversationId })
+		.then((response: ConversationFollowers) => {
 			response._pagination.should.exist;
 			response._pagination.should.have.keys('prev', 'next');
 			response._links.should.exist;
 			response._links.should.have.key('self');
 			response._results.should.exist;
 			response._results.length.should.be.gte(1);
-			response._results.should.satisfy(function (results: Author[]) {
-				return _.find(results, ['username', keys.testAuthor]);
+			response._results.should.satisfy((results: Author[]) => {
+				return _.find(results, [ 'username', this.globals.author.username ]);
 			});
 		});
 	});
 
 	it('should list all the messages in a conversation', function () {
-		if (!keys.testConversationId) {
+		if (!this.globals.testConversationId) {
 			throw new Error('Cannot find conversation ID');
 		}
-		return frontInst.conversation.listMessages({ conversation_id: keys.testConversationId })
-		.then(function (response: ConversationMessages) {
+		return this.globals.front.conversation.listMessages({ conversation_id: this.globals.testConversationId })
+		.then((response: ConversationMessages) => {
 			response._pagination.should.exist;
 			response._pagination.should.have.keys('prev', 'next');
 			response._links.should.exist;
 			response._links.should.have.key('self');
 			response._results.should.exist;
 			response._results.length.should.be.gt(1);
-			response._results.should.satisfy(function (results: Message[]) {
-				return _.find(results, ['body', keys.testMessageResponse]);
+			response._results.should.satisfy((results: Message[]) => {
+				return _.find(results, ['body', this.globals.testMessageResponse]);
 			});
 		});
 	});

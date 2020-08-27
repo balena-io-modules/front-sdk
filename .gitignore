@@ -45,3 +45,6 @@ _dev_notes
 package-lock.json
 
 test/creds.json
+.gitsecret/keys/random_seed
+!*.secret
+.balena/secrets/env

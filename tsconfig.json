@@ -11,12 +11,10 @@
 			"es5",
 			"es2015.iterable"
 		],
-		"types": [ "bluebird-global" ],
 		"noUnusedParameters": true,
 		"noUnusedLocals": true
 	},
 	"include": [
-		"typings/**/*.d.ts",
-		"lib/*.ts"
+		"lib/index.ts"
 	]
 }
