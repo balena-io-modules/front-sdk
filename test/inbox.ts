@@ -38,7 +38,6 @@ describe('Inboxes', function () {
 			response._links.related.should.include.keys('channels', 'conversations', 'teammates');
 			response.id.should.equal(this.globals.inbox.id);
 			response.name.should.equal(this.globals.inbox.name);
-			response.type.should.equal(this.globals.inbox.type);
 			response.address.should.exist;
 			response.send_as.should.exist;
 		});
@@ -63,7 +62,7 @@ describe('Inboxes', function () {
 			response._links.should.exist;
 			response._links.self.should.startsWith(`${apiUrl}/inboxes/${this.globals.inbox.id}/conversations`);
 			response._results.should.exist;
-			response._results.length.should.be.gt(1);
+			response._results.length.should.be.gte(1);
 		});
 	});
 

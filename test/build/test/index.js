@@ -50,6 +50,7 @@ var index_1 = require("../lib/index");
 var keeper_1 = require("./keeper");
 var TEST_INBOX_NAME = 'Front sdk test inbox';
 var TEST_CHANNEL_NAME = 'Test Channel';
+var TEST_CONVERSATION_EXTERNAL_ID = 'test_convo_external_id';
 var fetchAll = function (front, fn) {
     var args = [];
     for (var _i = 2; _i < arguments.length; _i++) {
@@ -87,6 +88,7 @@ before(function () {
         return __generator(this, function (_b) {
             switch (_b.label) {
                 case 0:
+                    this.timeout(20000);
                     this.globals = {};
                     keys = keeper_1.getKeeper().keys;
                     front = this.globals.front = new index_1.Front(keys.apiKey);
@@ -110,7 +112,7 @@ before(function () {
                         res.json({
                             type: 'success',
                             external_id: '' + Date.now(),
-                            external_conversation_id: '' + Date.now()
+                            external_conversation_id: TEST_CONVERSATION_EXTERNAL_ID
                         });
                     });
                     server = null;
@@ -172,8 +174,8 @@ before(function () {
     });
 });
 require('./apilogin');
-require('./inbox');
 require('./message');
+require('./inbox');
 require('./comment');
 require('./contact');
 require('./conversation');
@@ -187,7 +189,9 @@ after(function () {
                 case 0: return [4, ngrok.kill()];
                 case 1:
                     _a.sent();
-                    this.server.close();
+                    if (this.server) {
+                        this.server.close();
+                    }
                     return [2];
             }
         });

@@ -9,6 +9,7 @@ import { AddressInfo } from 'net';
 
 const TEST_INBOX_NAME = 'Front sdk test inbox';
 const TEST_CHANNEL_NAME = 'Test Channel';
+const TEST_CONVERSATION_EXTERNAL_ID = 'test_convo_external_id';
 
 const fetchAll = async <T>(front: Front, fn: (...args: any) => Bluebird<List<T>>, ...args: any) => {
 	const result = await fn(...args);
@@ -27,6 +28,7 @@ const fetchAll = async <T>(front: Front, fn: (...args: any) => Bluebird<List<T>>
 };
 
 before(async function () {
+	this.timeout(20000);
 	this.globals = {};
 
 	const keys = getKeeper().keys;
@@ -53,7 +55,7 @@ before(async function () {
 		res.json({
 			type: 'success',
 			external_id: '' + Date.now(),
-			external_conversation_id: '' + Date.now()
+			external_conversation_id: TEST_CONVERSATION_EXTERNAL_ID
 		});
 	});
 
@@ -101,8 +103,8 @@ before(async function () {
 });
 
 require('./apilogin');
-require('./inbox');
 require('./message');
+require('./inbox');
 require('./comment');
 require('./contact');
 require('./conversation');
@@ -112,5 +114,8 @@ require('./event');
 
 after(async function () {
 	await ngrok.kill();
-	this.server.close();
+
+	if (this.server) {
+		this.server.close();
+	}
 });

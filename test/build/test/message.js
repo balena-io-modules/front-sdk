@@ -20,6 +20,9 @@ describe('Messages', function () {
             channel_id: this.globals.channel.id,
             subject: this.globals.testMessageSubject,
             to: [this.globals.author.email],
+            options: {
+                archive: false,
+            }
         }).then(function (response) {
             response.should.exist;
         });
@@ -34,6 +37,9 @@ describe('Messages', function () {
                 handle: recipient
             },
             subject: this.globals.testMessageSubject,
+            options: {
+                archive: false,
+            }
         }).then(function (response) {
             response.conversation_reference.should.exist;
             if (response.status) {
@@ -80,6 +86,9 @@ describe('Messages', function () {
         return this.globals.front.message.reply({
             body: this.globals.testMessageResponse,
             conversation_id: this.globals.testConversationId,
+            options: {
+                archive: false,
+            }
         }).then(function (response) {
             response.should.exist;
         });
