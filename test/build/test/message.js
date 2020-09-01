@@ -9,9 +9,11 @@ chai.should();
 describe('Messages', function () {
     var recipient = 'testbot';
     var testText = "Please ignore";
+    var testMessageSubject = "Front SDK Subject Test " + Date().toString();
+    var testMessageResponse = "Test Response " + Date().toString();
     before(function () {
-        this.globals.testMessageSubject = "Front SDK Subject Test " + Date().toString();
-        this.globals.testMessageResponse = "Test Response " + Date().toString();
+        this.globals.testMessageSubject = testMessageSubject;
+        this.globals.testMessageResponse = testMessageResponse;
     });
     it('should send a test message, checking for a conversation reference', function () {
         this.timeout(20000);
