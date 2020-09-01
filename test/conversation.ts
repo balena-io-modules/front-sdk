@@ -13,7 +13,6 @@ chai.should();
 
 describe('Conversations', function () {
 	it('should list all conversations', function () {
-		this.timeout(10000);
 		return this.globals.front.conversation.list().then(function (response: Conversations) {
 			response._pagination.should.exist;
 			response._pagination.should.have.keys('prev', 'next');
