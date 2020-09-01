@@ -18,7 +18,6 @@ jobs:
       - run:
           command: npm run test
           environment:
-            JUNIT: 1
             MOCHA_FILE: ~/junit/test-results.xml
           when: always
       - store_test_results:
