@@ -14,6 +14,7 @@ jobs:
     steps:
       - checkout # check out the code in the project directory
       - run: npm install
+      - run: mkdir ~/junit
       - run:
           name: Save test results
           command: npm run test
