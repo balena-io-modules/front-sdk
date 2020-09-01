@@ -39,6 +39,7 @@ gulp.task('testRun', gulp.series('testBuild', () => {
 	if (process.env.JUNIT) {
 		reporter = 'mocha-junit-reporter';
 	}
+	console.log('reporter', reporter);
 	return gulp.src('./test/build/test/index.js', { read: false })
 		.pipe(mocha({ reporter: reporter, timeout: 10000 }))
 }));
