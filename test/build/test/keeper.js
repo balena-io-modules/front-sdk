@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.getKeeper = exports.VaultKeeper = void 0;
 var VaultKeeper = (function () {
     function VaultKeeper(varName) {
         this.testKeys = JSON.parse(Buffer.from(varName, 'base64').toString());
@@ -8,7 +9,7 @@ var VaultKeeper = (function () {
         get: function () {
             return this.testKeys;
         },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     return VaultKeeper;
