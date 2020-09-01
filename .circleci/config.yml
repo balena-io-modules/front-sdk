@@ -14,7 +14,16 @@ jobs:
     steps:
       - checkout # check out the code in the project directory
       - run: npm install
-      - run: npm run test
+      - run:
+        command: npm run test
+        environment:
+          JUNIT: 1
+          MOCHA_FILE: ~/junit/test-results.xml
+        when: always
+      - store_test_results:
+        path: ~/junit
+      - store_artifacts:
+        path: ~/junit 
 workflows:
   version: 2
   build_and_test:
