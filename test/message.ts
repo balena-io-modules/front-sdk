@@ -12,10 +12,12 @@ chai.should();
 describe('Messages', function () {
 	const recipient = 'testbot';
 	const testText = `Please ignore`;
+	const testMessageSubject = `Front SDK Subject Test ${Date().toString()}`;
+	const testMessageResponse = `Test Response ${Date().toString()}`;
 	
 	before(function () {
-		this.globals.testMessageSubject = `Front SDK Subject Test ${Date().toString()}`;
-		this.globals.testMessageResponse = `Test Response ${Date().toString()}`;
+		this.globals.testMessageSubject = testMessageSubject;
+		this.globals.testMessageResponse = testMessageResponse;
 	});
 
 	it('should send a test message, checking for a conversation reference', function () {
