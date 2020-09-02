@@ -23,7 +23,7 @@ import { Server } from 'http';
 import * as _ from 'lodash';
 import * as querystring from 'querystring';
 import * as request from 'request-promise';
-import { TypedError } from 'typed-error';
+import TypedError = require('typed-error');
 
 const URL = 'https://api2.frontapp.com';
 
