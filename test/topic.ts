@@ -5,7 +5,7 @@ import * as Promise from 'bluebird';
 import * as chai from 'chai';
 import * as ChaiAsPromised from 'chai-as-promised';
 import 'mocha';
-import { Conversation, Front, FrontError, TopicConversations } from '../lib/index';
+import { Conversation, FrontError, TopicConversations } from '../lib/index';
 import { getKeeper } from './keeper';
 
 chai.use(ChaiAsPromised);
@@ -14,24 +14,24 @@ chai.should();
 describe('Topics', function () {
 	const vaultKeeper = getKeeper();
 	const keys = vaultKeeper.keys;
-	let frontInst: Front;
-	let githubInst: GithubApi;
+	let githubInst: GithubApi.Octokit;
 
 	before(function () {
-		frontInst = new Front(keys.apiKey);
-		githubInst = new GithubApi({
+		githubInst = new GithubApi.Octokit({
 			Promise: <any>Promise,
 			headers: {
 				Accept: 'application/vnd.github.loki-preview+json'
 			},
 			host: 'api.github.com',
 			protocol: 'https',
-			timeout: 5000
+			request: {
+				timeout: 5000
+			}
 		});
 	});
 
 	it('should return an empty results list for an invalid topic', function () {
-		return frontInst.topic.listConversations({ topic_id: 'top_xxxxx' }).then(() => {
+		return this.globals.front.topic.listConversations({ topic_id: 'top_xxxxx' }).then(() => {
 			throw new Error('Received a result for an invalid topic');
 		}).catch(FrontError, (error: FrontError) => {
 			error.name.should.eq('FrontError');
@@ -39,9 +39,9 @@ describe('Topics', function () {
 		});
 	});
 
-	it('should list all of conversations associated with a topic', function () {
+	it.skip('should list all of conversations associated with a topic', function () {
 		return githubInst.issues.get({
-			number: keys.testTopicIssue.issue,
+			issue_number: keys.testTopicIssue.issue,
 			owner: keys.testTopicIssue.owner,
 			repo: keys.testTopicIssue.repo,
 		}).then((issue) => {
@@ -50,7 +50,7 @@ describe('Topics', function () {
 			const frontTopic = bodyText.match(/\[.*]\((.*)\)/m)![1];
 			const topicId = frontTopic.slice(frontTopic.lastIndexOf('/') + 1);
 
-			return frontInst.topic.listConversations({ topic_id: topicId });
+			return this.globals.front.topic.listConversations({ topic_id: topicId });
 		}).then((response: TopicConversations) => {
 			response._pagination.should.exist;
 			response._pagination.should.have.keys('prev', 'next');
@@ -62,13 +62,13 @@ describe('Topics', function () {
 			const conversation: Conversation = response._results[0];
 			conversation._links.should.exist;
 			conversation._links.should.have.keys('self', 'related');
-			conversation.id.should.eq(keys.testConversationId);
-			conversation.subject.should.eq(keys.testMessageSubject);
+			conversation.id.should.eq(this.global.testConversationId);
+			conversation.subject.should.eq(this.global.testMessageSubject);
 			conversation.status.should.exist;
 			conversation.recipient.should.exist;
 			conversation.last_message.should.exist;
 			conversation.last_message.id.should.exist;
-			conversation.last_message.body.should.eq(keys.testMessageResponse);
+			conversation.last_message.body.should.eq(this.global.testMessageResponse);
 			conversation.created_at.should.exist;
 		});
 	});

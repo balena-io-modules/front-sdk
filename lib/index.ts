@@ -34,10 +34,13 @@ interface EventPreview {
 	emitted_at: number;
 }
 
-interface Request {
+type Request = {
 	method: string;
+} & ({
+	url: string;
+} | {
 	path: string;
-}
+});
 
 type InternalCallback = (err: Error | null, response: any | null) => void;
 
@@ -142,6 +145,12 @@ export class Front {
 			path: 'topics/<topic_id>/conversations[q:page_token:limit]' }, params, callback),
 	};
 
+	public channel = {
+		update: (params: ChannelRequest.UpdateChannel, callback?: Callback<Channel>):
+		Promise<Channel> => this.httpCall({ method: 'PATCH',
+			path: 'channels/<channel_id>' }, params, callback),
+	};
+
 	// Keys for Front access and event verification.
 	private apiKey: string;
 	private apiSecret: string;
@@ -236,9 +245,9 @@ export class Front {
 		return this.httpCall({ method: 'GET', path }, null, callback);
 	}
 
-	private httpCall(details: Request, params: any, callback?: InternalCallback, retries: number = 0):
+	public httpCall(details: Request, params: any, callback?: InternalCallback, retries: number = 0):
 		Promise<any | void>	{
-		const url = `${URL}/${this.formatPath(details.path, params)}`;
+		const url = 'url' in details ? details.url : `${URL}/${this.formatPath(details.path, params)}`;
 		const body = params || {};
 
 		const requestOpts = {
@@ -452,6 +461,7 @@ export interface Channel {
 	_links: Links;
 	address: string;
 	id: string;
+	name: string;
 	send_as: string;
 	settings?: ChannelSettings;
 	type: string;
@@ -661,10 +671,13 @@ export interface Inbox {
 	type: string;
 }
 
-export interface Inboxes {
+export interface List<T> {
 	_pagination: Pagination;
 	_links: Links;
-	_results: Inbox[];
+	_results: T[];
+}
+
+export interface Inboxes extends List<Inbox> {
 }
 
 export interface InboxCreation {
@@ -672,22 +685,13 @@ export interface InboxCreation {
 	name: string;
 }
 
-export interface InboxChannels {
-	_pagination: Pagination;
-	_links: Links;
-	_results: Channel[];
+export interface InboxChannels extends List<Channel> {
 }
 
-export interface InboxConversations {
-	_pagination: Pagination;
-	_links: Links;
-	_results: Conversation[];
+export interface InboxConversations extends List<Conversation> {
 }
 
-export interface InboxTeammates {
-	_pagination: Pagination;
-	_links: Links;
-	_results: Author[];
+export interface InboxTeammates extends List<Author> {
 }
 
 export namespace InboxRequest {
@@ -699,6 +703,7 @@ export namespace InboxRequest {
 	}
 
 	export interface CreateChannel {
+		name: string;
 		inbox_id: string;
 		type: 'smtp' | 'imap' | 'twilio' | 'twitter' | 'facebook' | 'smooch' | 'intercom' | 'truly' | 'custom';
 		settings: {
@@ -837,6 +842,13 @@ export namespace TopicRequest {
 		page_token?: string;
 		limit?: number;
 		[key: string]: string | number | void;
+	}
+}
+
+export namespace ChannelRequest {
+	export interface UpdateChannel {
+		channel_id: string;
+		settings: ChannelSettings;
 	}
 }
 

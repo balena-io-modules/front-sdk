@@ -13,6 +13,7 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.FrontError = exports.Front = void 0;
 var Promise = require("bluebird");
 var bodyParser = require("body-parser");
 var crypto = require("crypto");
@@ -36,7 +37,7 @@ var Front = (function () {
         };
         this.contact = {
             create: function (params, callback) {
-                return _this.httpCall({ method: 'POST', path: '/contacts' }, params, callback);
+                return _this.httpCall({ method: 'POST', path: 'contacts' }, params, callback);
             },
             delete: function (params, callback) {
                 return _this.httpCall({ method: 'DELETE', path: 'contacts/<contact_id>' }, params, callback);
@@ -70,7 +71,7 @@ var Front = (function () {
                 return _this.httpCall({ method: 'GET', path: 'conversations' }, null, callback);
             },
             update: function (params, callback) {
-                return _this.httpCall({ method: 'PATCH', path: 'conversations/<conversation_id>' }, params, callback);
+                return _this.httpCall({ method: 'PATCH', path: "conversations/" + params.conversation_id }, _.omit(params, ['conversation_id']), callback);
             },
         };
         this.inbox = {
@@ -116,6 +117,10 @@ var Front = (function () {
         this.topic = {
             listConversations: function (params, callback) { return _this.httpCall({ method: 'GET',
                 path: 'topics/<topic_id>/conversations[q:page_token:limit]' }, params, callback); },
+        };
+        this.channel = {
+            update: function (params, callback) { return _this.httpCall({ method: 'PATCH',
+                path: 'channels/<channel_id>' }, params, callback); },
         };
         this.apiKey = apiKey;
         if (apiSecret) {
@@ -183,7 +188,7 @@ var Front = (function () {
     Front.prototype.httpCall = function (details, params, callback, retries) {
         var _this = this;
         if (retries === void 0) { retries = 0; }
-        var url = URL + "/" + this.formatPath(details.path, params);
+        var url = 'url' in details ? details.url : URL + "/" + this.formatPath(details.path, params);
         var body = params || {};
         var requestOpts = {
             body: body,

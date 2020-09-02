@@ -3,27 +3,19 @@
 import * as chai from 'chai';
 import * as ChaiAsPromised from 'chai-as-promised';
 import 'mocha';
-import { Contact, Front, FrontError } from '../lib/index';
-import { getKeeper } from './keeper';
+import { Contact, FrontError } from '../lib/index';
 
 chai.use(ChaiAsPromised);
 chai.should();
 
 describe('Contacts', function () {
-	const vaultKeeper = getKeeper();
-	const keys = vaultKeeper.keys;
-	let frontInst: Front;
 	let contactId: string;
 
-	before(function () {
-		frontInst = new Front(keys.apiKey);
-	});
-
 	it('should create a contact', function() {
-		return frontInst.contact.create({
+		return this.globals.front.contact.create({
 			handles: [
 				{
-					handle: 'test@example.com',
+					handle: `test-${Date.now()}@example.com`,
 					source: 'email'
 				}
 			]
@@ -35,14 +27,14 @@ describe('Contacts', function () {
 	});
 
 	it('should update the contact above', function() {
-		return frontInst.contact.update({
+		return this.globals.front.contact.update({
 			contact_id: contactId,
 			name: 'test example'
 		});
 	});
 
 	it('should get the contact above', function() {
-		return frontInst.contact.get({
+		return this.globals.front.contact.get({
 			contact_id: contactId,
 		}).then(function (contact: Contact) {
 			contact.should.exist;
@@ -52,13 +44,13 @@ describe('Contacts', function () {
 	});
 
 	it('should delete the contact above', function() {
-		return frontInst.contact.delete({
+		return this.globals.front.contact.delete({
 			contact_id: contactId,
 		});
 	});
 
 	it('should fail to find the contact deleted above', function() {
-		return frontInst.contact.get({
+		return this.globals.front.contact.get({
 			contact_id: contactId,
 		}).catch(FrontError, (error: FrontError) => {
 			error.name.should.eq('FrontError');

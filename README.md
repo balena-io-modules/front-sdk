@@ -103,3 +103,11 @@ So to post a new Conversation:
 
 To post a Comment or Message to that Conversation:
  * Use the Conversation reference to post (returns a Comment or Message object)
+
+## Running tests locally
+
+Put [configuration](./test/keeper.ts) in `./test/creds.json` file and then run:
+
+```
+FRONT_TEST_KEYS=`node ./test/encode_keys.js ./test/creds.json` npm run test
+```
