@@ -45,3 +45,8 @@ _dev_notes
 package-lock.json
 
 test/creds.json
+
+# build files
+
+build/
+test/build/

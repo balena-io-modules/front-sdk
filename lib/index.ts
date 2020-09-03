@@ -5,7 +5,7 @@ Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
-   http://www.apache.org/licenses/LICENSE-2.0
+	 http://www.apache.org/licenses/LICENSE-2.0
 
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
@@ -23,7 +23,7 @@ import { Server } from 'http';
 import * as _ from 'lodash';
 import * as querystring from 'querystring';
 import * as request from 'request-promise';
-import TypedError = require('typed-error');
+import { TypedError } from 'typed-error';
 
 const URL = 'https://api2.frontapp.com';
 
@@ -51,98 +51,274 @@ export class Front {
 	// <tag> is a mandatory tag and updates the path dynamically
 	// [tag[:tag]] is an optional tag that is used to build query string at the end of the path
 	public comment = {
-		create: (params: CommentRequest.Create, callback?: Callback<Comment>): Promise<Comment> =>
-			this.httpCall({ method: 'POST', path: 'conversations/<conversation_id>/comments'}, params, callback),
-		get: (params: CommentRequest.Get, callback?: Callback<Comment>): Promise<Comment> =>
-			this.httpCall({ method: 'GET', path: 'comments/<comment_id>'}, params, callback),
-		listMentions: (params: CommentRequest.ListMentions, callback?: Callback<CommentMentions>):
-			Promise<CommentMentions> => this.httpCall({method: 'GET', path: 'comments/<comment_id>/mentions'},
-			params, callback),
+		create: (
+			params: CommentRequest.Create,
+			callback?: Callback<Comment>,
+		): Promise<Comment> =>
+			this.httpCall(
+				{ method: 'POST', path: 'conversations/<conversation_id>/comments' },
+				params,
+				callback,
+			),
+		get: (
+			params: CommentRequest.Get,
+			callback?: Callback<Comment>,
+		): Promise<Comment> =>
+			this.httpCall(
+				{ method: 'GET', path: 'comments/<comment_id>' },
+				params,
+				callback,
+			),
+		listMentions: (
+			params: CommentRequest.ListMentions,
+			callback?: Callback<CommentMentions>,
+		): Promise<CommentMentions> =>
+			this.httpCall(
+				{ method: 'GET', path: 'comments/<comment_id>/mentions' },
+				params,
+				callback,
+			),
 	};
 
 	public contact = {
-		create: (params: ContactRequest.Create, callback?: Callback<Contact>): Promise<Contact> =>
+		create: (
+			params: ContactRequest.Create,
+			callback?: Callback<Contact>,
+		): Promise<Contact> =>
 			this.httpCall({ method: 'POST', path: 'contacts' }, params, callback),
-		delete: (params: ContactRequest.Delete, callback?: Callback<void>): Promise<void> =>
-			this.httpCall({ method: 'DELETE', path: 'contacts/<contact_id>' }, params, callback),
-		get: (params: ContactRequest.Get, callback?: Callback<Contact>): Promise<Contact> =>
-			this.httpCall({ method: 'GET', path: 'contacts/<contact_id>' }, params, callback),
-		update: (params: ContactRequest.Update, callback?: Callback<void>): Promise<void> =>
-			this.httpCall({ method: 'PATCH', path: 'contacts/<contact_id>' }, params, callback),
+		delete: (
+			params: ContactRequest.Delete,
+			callback?: Callback<void>,
+		): Promise<void> =>
+			this.httpCall(
+				{ method: 'DELETE', path: 'contacts/<contact_id>' },
+				params,
+				callback,
+			),
+		get: (
+			params: ContactRequest.Get,
+			callback?: Callback<Contact>,
+		): Promise<Contact> =>
+			this.httpCall(
+				{ method: 'GET', path: 'contacts/<contact_id>' },
+				params,
+				callback,
+			),
+		update: (
+			params: ContactRequest.Update,
+			callback?: Callback<void>,
+		): Promise<void> =>
+			this.httpCall(
+				{ method: 'PATCH', path: 'contacts/<contact_id>' },
+				params,
+				callback,
+			),
 	};
 
 	public conversation = {
-		get: (params: ConversationRequest.Get, callback?: Callback<Conversation>): Promise<Conversation> =>
-			this.httpCall({ method: 'GET', path: 'conversations/<conversation_id>'}, params, callback),
-		list: (params?: ConversationRequest.List, callback?: Callback<Conversations>): Promise<Conversations> =>
-			this.httpCall({ method: 'GET', path: 'conversations[q:page_token:limit]' }, params, callback),
-		listComments: (params: ConversationRequest.ListComments, callback?: Callback<ConversationComments>):
-			Promise<ConversationComments> => this.httpCall({ method: 'GET',
-			path: 'conversations/<conversation_id>/comments' }, params, callback),
-		listFollowers: (params: ConversationRequest.ListFollowers,
-			callback?: Callback<ConversationFollowers>): Promise<ConversationFollowers> =>
-			this.httpCall({ method: 'GET', path: 'conversations/<conversation_id>/followers' }, params, callback),
-		listInboxes: (params: ConversationRequest.ListInboxes,
-			callback?: Callback<ConversationInboxes>): Promise<ConversationInboxes> =>
-			this.httpCall({ method: 'GET', path: 'conversations/<conversation_id>/inboxes' }, params, callback),
-		listMessages: (params: ConversationRequest.ListMessages,
-			callback?: Callback<ConversationMessages>): Promise<ConversationMessages> =>
-			this.httpCall({ method: 'GET', path: 'conversations/<conversation_id>/messages[page_token:limit]' },
-			params, callback),
+		get: (
+			params: ConversationRequest.Get,
+			callback?: Callback<Conversation>,
+		): Promise<Conversation> =>
+			this.httpCall(
+				{ method: 'GET', path: 'conversations/<conversation_id>' },
+				params,
+				callback,
+			),
+		list: (
+			params?: ConversationRequest.List,
+			callback?: Callback<Conversations>,
+		): Promise<Conversations> =>
+			this.httpCall(
+				{ method: 'GET', path: 'conversations[q:page_token:limit]' },
+				params,
+				callback,
+			),
+		listComments: (
+			params: ConversationRequest.ListComments,
+			callback?: Callback<ConversationComments>,
+		): Promise<ConversationComments> =>
+			this.httpCall(
+				{ method: 'GET', path: 'conversations/<conversation_id>/comments' },
+				params,
+				callback,
+			),
+		listFollowers: (
+			params: ConversationRequest.ListFollowers,
+			callback?: Callback<ConversationFollowers>,
+		): Promise<ConversationFollowers> =>
+			this.httpCall(
+				{ method: 'GET', path: 'conversations/<conversation_id>/followers' },
+				params,
+				callback,
+			),
+		listInboxes: (
+			params: ConversationRequest.ListInboxes,
+			callback?: Callback<ConversationInboxes>,
+		): Promise<ConversationInboxes> =>
+			this.httpCall(
+				{ method: 'GET', path: 'conversations/<conversation_id>/inboxes' },
+				params,
+				callback,
+			),
+		listMessages: (
+			params: ConversationRequest.ListMessages,
+			callback?: Callback<ConversationMessages>,
+		): Promise<ConversationMessages> =>
+			this.httpCall(
+				{
+					method: 'GET',
+					path: 'conversations/<conversation_id>/messages[page_token:limit]',
+				},
+				params,
+				callback,
+			),
 		listRecent: (callback?: Callback<Conversations>): Promise<Conversations> =>
 			this.httpCall({ method: 'GET', path: 'conversations' }, null, callback),
-		update: (params: ConversationRequest.Update, callback?: Callback<void>): Promise<void> =>
-			this.httpCall({ method: 'PATCH', path: `conversations/${params.conversation_id}` },
-				_.omit(params, [ 'conversation_id' ]), callback),
+		update: (
+			params: ConversationRequest.Update,
+			callback?: Callback<void>,
+		): Promise<void> =>
+			this.httpCall(
+				{ method: 'PATCH', path: `conversations/${params.conversation_id}` },
+				_.omit(params, ['conversation_id']),
+				callback,
+			),
 	};
 
 	public inbox = {
-		create: (params: InboxRequest.Create, callback?: Callback<InboxCreation>): Promise<InboxCreation> =>
+		create: (
+			params: InboxRequest.Create,
+			callback?: Callback<InboxCreation>,
+		): Promise<InboxCreation> =>
 			this.httpCall({ method: 'POST', path: 'inboxes' }, params, callback),
-		createChannel: (params: InboxRequest.CreateChannel, callback?: Callback<Channel>):
-			Promise<Channel> => this.httpCall({ method: 'POST', path: 'inboxes/<inbox_id>/channels' },
-			params, callback),
-		get: (params: InboxRequest.Get, callback?: Callback<Inbox>): Promise<Inbox> =>
-			this.httpCall({ method: 'GET', path: 'inboxes/<inbox_id>' }, params, callback),
+		createChannel: (
+			params: InboxRequest.CreateChannel,
+			callback?: Callback<Channel>,
+		): Promise<Channel> =>
+			this.httpCall(
+				{ method: 'POST', path: 'inboxes/<inbox_id>/channels' },
+				params,
+				callback,
+			),
+		get: (
+			params: InboxRequest.Get,
+			callback?: Callback<Inbox>,
+		): Promise<Inbox> =>
+			this.httpCall(
+				{ method: 'GET', path: 'inboxes/<inbox_id>' },
+				params,
+				callback,
+			),
 		list: (callback?: Callback<Inboxes>): Promise<Inboxes> =>
 			this.httpCall({ method: 'GET', path: 'inboxes' }, null, callback),
-		listChannels: (params: InboxRequest.ListChannels, callback?: Callback<InboxChannels>):
-			Promise<InboxChannels> => this.httpCall({ method: 'GET', path: 'inboxes/<inbox_id>/channels' },
-			params, callback),
-		listConversations: (params: InboxRequest.ListConversations, callback?: Callback<InboxConversations>):
-			Promise<InboxConversations> => this.httpCall({ method: 'GET',
-			path: 'inboxes/<inbox_id>/conversations[q:page_token:limit]' }, params, callback),
-		listTeammates: (params: InboxRequest.ListTeammates, callback?: Callback<InboxTeammates>):
-			Promise<InboxTeammates> => this.httpCall({ method: 'GET', path: 'inboxes/<inbox_id>/teammates' },
-			params, callback),
+		listChannels: (
+			params: InboxRequest.ListChannels,
+			callback?: Callback<InboxChannels>,
+		): Promise<InboxChannels> =>
+			this.httpCall(
+				{ method: 'GET', path: 'inboxes/<inbox_id>/channels' },
+				params,
+				callback,
+			),
+		listConversations: (
+			params: InboxRequest.ListConversations,
+			callback?: Callback<InboxConversations>,
+		): Promise<InboxConversations> =>
+			this.httpCall(
+				{
+					method: 'GET',
+					path: 'inboxes/<inbox_id>/conversations[q:page_token:limit]',
+				},
+				params,
+				callback,
+			),
+		listTeammates: (
+			params: InboxRequest.ListTeammates,
+			callback?: Callback<InboxTeammates>,
+		): Promise<InboxTeammates> =>
+			this.httpCall(
+				{ method: 'GET', path: 'inboxes/<inbox_id>/teammates' },
+				params,
+				callback,
+			),
 	};
 
 	public message = {
-		get: (params: MessageRequest.Get, callback?: Callback<Message>): Promise<Message> =>
-			this.httpCall({ method: 'GET', path: 'messages/<message_id>' }, params, callback),
-		receiveCustom: (params: MessageRequest.ReceiveCustom,
-			callback?: Callback<ConversationReference>): Promise<ConversationReference> =>
-			this.httpCall({ method: 'POST', path: 'channels/<channel_id>/incoming_messages' }, params, callback),
-		reply: (params: MessageRequest.Reply, callback?: Callback<Message>): Promise<Message> =>
-			this.httpCall({ method: 'POST', path: 'conversations/<conversation_id>/messages' }, params, callback),
-		send: (params: MessageRequest.Send, callback?: Callback<Message>):
-			Promise<Message> => this.httpCall({ method: 'POST',
-			path: 'channels/<channel_id>/messages' }, params, callback),
+		get: (
+			params: MessageRequest.Get,
+			callback?: Callback<Message>,
+		): Promise<Message> =>
+			this.httpCall(
+				{ method: 'GET', path: 'messages/<message_id>' },
+				params,
+				callback,
+			),
+		receiveCustom: (
+			params: MessageRequest.ReceiveCustom,
+			callback?: Callback<ConversationReference>,
+		): Promise<ConversationReference> =>
+			this.httpCall(
+				{ method: 'POST', path: 'channels/<channel_id>/incoming_messages' },
+				params,
+				callback,
+			),
+		reply: (
+			params: MessageRequest.Reply,
+			callback?: Callback<Message>,
+		): Promise<Message> =>
+			this.httpCall(
+				{ method: 'POST', path: 'conversations/<conversation_id>/messages' },
+				params,
+				callback,
+			),
+		send: (
+			params: MessageRequest.Send,
+			callback?: Callback<Message>,
+		): Promise<Message> =>
+			this.httpCall(
+				{ method: 'POST', path: 'channels/<channel_id>/messages' },
+				params,
+				callback,
+			),
 	};
 
 	public teammate = {
-		get: (params: TeammateRequest.Get, callback?: Callback<Teammate>): Promise<Teammate> =>
-			this.httpCall({ method: 'GET', path: 'teammates/<teammate_id>' }, params, callback),
+		get: (
+			params: TeammateRequest.Get,
+			callback?: Callback<Teammate>,
+		): Promise<Teammate> =>
+			this.httpCall(
+				{ method: 'GET', path: 'teammates/<teammate_id>' },
+				params,
+				callback,
+			),
 		list: (callback?: Callback<Teammates>): Promise<Teammates> =>
 			this.httpCall({ method: 'GET', path: 'teammates' }, null, callback),
-		update: (params: TeammateRequest.Update, callback?: Callback<void>): Promise<void> =>
-			this.httpCall({ method: 'PATCH', path: 'teammates/<teammate_id>' }, params, callback),
+		update: (
+			params: TeammateRequest.Update,
+			callback?: Callback<void>,
+		): Promise<void> =>
+			this.httpCall(
+				{ method: 'PATCH', path: 'teammates/<teammate_id>' },
+				params,
+				callback,
+			),
 	};
 
 	public topic = {
-		listConversations: (params: TopicRequest.ListConversations, callback?: Callback<TopicConversations>):
-		Promise<TopicConversations> => this.httpCall({ method: 'GET',
-			path: 'topics/<topic_id>/conversations[q:page_token:limit]' }, params, callback),
+		listConversations: (
+			params: TopicRequest.ListConversations,
+			callback?: Callback<TopicConversations>,
+		): Promise<TopicConversations> =>
+			this.httpCall(
+				{
+					method: 'GET',
+					path: 'topics/<topic_id>/conversations[q:page_token:limit]',
+				},
+				params,
+				callback,
+			),
 	};
 
 	public channel = {
@@ -164,23 +340,30 @@ export class Front {
 		}
 	}
 
-	public registerEvents(opts: EventHookOptions, callback: EventCallback): Server | void {
+	public registerEvents(
+		opts: EventHookOptions,
+		callback: EventCallback,
+	): Server | void {
 		let httpServer: Server | void;
 		let listener: express.Application;
 		const eventQueue: string[] = [];
 		const requestEvent = () => {
 			// Get next event in the queue.
 			const eventId = eventQueue[0];
-			this.httpCall({ path: 'events/<event_id>', method: 'GET' }, {
-				event_id: eventId
-			}).asCallback(callback)
-			.finally(() => {
-				// Get another event if there is one, else finish.
-				eventQueue.shift();
-				if (eventQueue.length > 0) {
-					requestEvent();
-				}
-			});
+			this.httpCall(
+				{ path: 'events/<event_id>', method: 'GET' },
+				{
+					event_id: eventId,
+				},
+			)
+				.asCallback(callback)
+				.finally(() => {
+					// Get another event if there is one, else finish.
+					eventQueue.shift();
+					if (eventQueue.length > 0) {
+						requestEvent();
+					}
+				});
 		};
 		const addToEventQueue = (id: string): void => {
 			// Push the event onto the queue. If there's nothing already
@@ -218,11 +401,15 @@ export class Front {
 
 		// Listen for Webhooks on the path specified by the client.
 		listener.post(hookPath, (req: express.Request, res: express.Response) => {
-			const eventPreview: EventPreview = (typeof(req.body) === 'string') ? JSON.parse(req.body) : req.body;
+			const eventPreview: EventPreview =
+				typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
 
 			// Ensure that the sender is authorised and uses our secret.
 			const XFrontSignature = req.get('X-Front-Signature');
-			if (!XFrontSignature || !this.validateEventSignature(eventPreview, XFrontSignature)) {
+			if (
+				!XFrontSignature ||
+				!this.validateEventSignature(eventPreview, XFrontSignature)
+			) {
 				res.sendStatus(401);
 				throw new Error('Event Signature does not match registered secret');
 			}
@@ -239,7 +426,10 @@ export class Front {
 	}
 
 	// Utility method for occasions where we have the actual url, eg `_links`
-	public getFromLink(url: string, callback?: Callback<Object>): Promise<Object> {
+	public getFromLink(
+		url: string,
+		callback?: Callback<Object>,
+	): Promise<Object> {
 		// This prunes the API url and any leading / from a path to request
 		const path = url.replace(URL, '').replace(/^\//, '');
 		return this.httpCall({ method: 'GET', path }, null, callback);
@@ -253,33 +443,39 @@ export class Front {
 		const requestOpts = {
 			body,
 			headers: {
-				Authorization: `Bearer ${this.apiKey}`
+				Authorization: `Bearer ${this.apiKey}`,
 			},
 			json: true,
 			method: details.method,
-			url
+			url,
 		};
 
 		// Make the request.
-		return request(requestOpts).promise().catch((error: any) => {
-			// Retry a couple of times if we get 5XX errors, as Front
-			// can get quite unreliable sometimes
-			if (error.statusCode >= 500 && retries < 5) {
-				return Promise.delay(300).then(() => {
-					return this.httpCall(details, params, callback, retries + 1);
-				});
-			}
+		return request(requestOpts)
+			.promise()
+			.catch((error: any) => {
+				// Retry a couple of times if we get 5XX errors, as Front
+				// can get quite unreliable sometimes
+				if (error.statusCode >= 500 && retries < 5) {
+					return Promise.delay(300).then(() => {
+						return this.httpCall(details, params, callback, retries + 1);
+					});
+				}
 
-			// Format this into something useful, if we can.
-			const frontError = new FrontError(error);
-			frontError.message += ` at ${url} with body ${JSON.stringify(body)}`;
-			throw frontError;
-		}).asCallback(callback);
+				// Format this into something useful, if we can.
+				const frontError = new FrontError(error);
+				frontError.message += ` at ${url} with body ${JSON.stringify(body)}`;
+				throw frontError;
+			})
+			.asCallback(callback);
 	}
 
 	private formatPath(path: string, data: RequestData = {}): string {
 		let newPath = path;
-		const reSearch = (re: RegExp, operation: (matches: RegExpMatchArray) => void) => {
+		const reSearch = (
+			re: RegExp,
+			operation: (matches: RegExpMatchArray) => void,
+		) => {
 			let matches = path.match(re);
 			if (matches) {
 				operation(matches);
@@ -289,7 +485,7 @@ export class Front {
 		// Find the mandatories. If we don't get them, then we error.
 		reSearch(/<(.*?)>/g, (mandatoryTags: RegExpMatchArray) => {
 			_.map(mandatoryTags, (tag) => {
-				const tagName = tag.substring(1, tag.length -1);
+				const tagName = tag.substring(1, tag.length - 1);
 				if (!data[tagName]) {
 					throw new Error(`Tag ${tag} not found in parameter data`);
 				}
@@ -313,7 +509,7 @@ export class Front {
 			// QueryString any tags that aren't the search string.
 			newPath = newPath.replace(trimmedTags, '');
 			_.each(tags, (tag) => {
-				if ((tag !== 'q') && data[tag]) {
+				if (tag !== 'q' && data[tag]) {
 					queryTags[tag] = data[tag];
 				}
 			});
@@ -331,7 +527,8 @@ export class Front {
 	private validateEventSignature(data: any, signature: string): boolean {
 		let hash = '';
 		try {
-			hash = crypto.createHmac('sha1', this.apiSecret)
+			hash = crypto
+				.createHmac('sha1', this.apiSecret)
 				.update(JSON.stringify(data))
 				.digest('base64');
 		} catch (err) {
@@ -381,7 +578,7 @@ export class FrontError extends TypedError {
 
 		const frontError = error.error._error;
 		if (frontError) {
-			_.each([ 'status', 'title', 'message', 'details' ], (key) => {
+			_.each(['status', 'title', 'message', 'details'], (key) => {
 				if (frontError[key]) {
 					this[key] = frontError[key];
 				}
@@ -528,10 +725,10 @@ export interface Contact {
 	}>;
 	updated_at: number;
 	custom_fields: {
-		[key: string]: string
+		[key: string]: string;
 	};
 	is_private: boolean;
-};
+}
 
 export namespace ContactRequest {
 	// Request structures /////////////////////////////////////////////////////
@@ -705,7 +902,16 @@ export namespace InboxRequest {
 	export interface CreateChannel {
 		name: string;
 		inbox_id: string;
-		type: 'smtp' | 'imap' | 'twilio' | 'twitter' | 'facebook' | 'smooch' | 'intercom' | 'truly' | 'custom';
+		type:
+			| 'smtp'
+			| 'imap'
+			| 'twilio'
+			| 'twitter'
+			| 'facebook'
+			| 'smooch'
+			| 'intercom'
+			| 'truly'
+			| 'custom';
 		settings: {
 			webhook_url: string;
 		};
@@ -862,22 +1068,48 @@ export interface EventHookOptions {
 }
 
 export type RequestData =
-	CommentRequest.Create | CommentRequest.Get | CommentRequest.ListMentions |
-	ConversationRequest.List | ConversationRequest.Get | ConversationRequest.Update |
-		ConversationRequest.ListComments | ConversationRequest.ListFollowers |
-		ConversationRequest.ListInboxes | ConversationRequest.ListMessages |
-	InboxRequest.Create | InboxRequest.Get | InboxRequest.ListChannels |
-		InboxRequest.ListConversations | InboxRequest.ListTeammates |
-	MessageRequest.Get | MessageRequest.Send | MessageRequest.Reply |
-		MessageRequest.ReceiveCustom |
-	TopicRequest.ListConversations;
+	| CommentRequest.Create
+	| CommentRequest.Get
+	| CommentRequest.ListMentions
+	| ConversationRequest.List
+	| ConversationRequest.Get
+	| ConversationRequest.Update
+	| ConversationRequest.ListComments
+	| ConversationRequest.ListFollowers
+	| ConversationRequest.ListInboxes
+	| ConversationRequest.ListMessages
+	| InboxRequest.Create
+	| InboxRequest.Get
+	| InboxRequest.ListChannels
+	| InboxRequest.ListConversations
+	| InboxRequest.ListTeammates
+	| MessageRequest.Get
+	| MessageRequest.Send
+	| MessageRequest.Reply
+	| MessageRequest.ReceiveCustom
+	| TopicRequest.ListConversations;
 
 export type ResponseData =
-	Attachment | Author | Links | Recipient | Sender | Tag | ConversationReference |
-	Comment | CommentMentions |
-	Conversation | Conversations | ConversationComments | ConversationInboxes | ConversationFollowers |
-		ConversationMessages |
-	Inbox | Inboxes | InboxCreation | InboxChannels | InboxConversations |
-		InboxTeammates |
-	Message |
-	TopicConversations;
+	| Attachment
+	| Author
+	| Links
+	| Recipient
+	| Sender
+	| Tag
+	| ConversationReference
+	| Comment
+	| CommentMentions
+	| Conversation
+	| Conversations
+	| ConversationComments
+	| ConversationInboxes
+	| ConversationFollowers
+	| ConversationMessages
+	| Inbox
+	| Inboxes
+	| InboxCreation
+	| InboxChannels
+	| InboxConversations
+	| InboxTeammates
+	| Message
+	| TopicConversations;
