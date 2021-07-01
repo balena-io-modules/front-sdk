@@ -4,7 +4,7 @@
   "description": "A JavaScript API for Front (https://frontapp.com)",
   "homepage": "https://github.com/resin-io-modules/front-sdk#readme",
   "main": "build/index.js",
-  "types": "lib/index.ts",
+  "types": "build/index.d.ts",
   "keywords": [
     "resin",
     "typescript"

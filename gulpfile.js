@@ -7,7 +7,6 @@ const mocha = require('gulp-mocha');
 function getProject(test) {
 	const tsProject = typescript.createProject('tsconfig.json');
 	if (test) {
-		tsProject.options.declaration = false;
 		tsProject.config.include.push('./test/**/*.ts')
 	}
 
