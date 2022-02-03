@@ -576,7 +576,7 @@ export class FrontError extends TypedError {
 	constructor(error: any) {
 		super(error);
 
-		const frontError = error.error._error;
+		const frontError = error?.error?._error;
 		if (frontError) {
 			_.each(['status', 'title', 'message', 'details'], (key) => {
 				if (frontError[key]) {
