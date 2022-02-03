@@ -1,6 +1,6 @@
 {
   "name": "front-sdk",
-  "version": "0.8.1",
+  "version": "0.8.2",
   "description": "A JavaScript API for Front (https://frontapp.com)",
   "homepage": "https://github.com/resin-io-modules/front-sdk#readme",
   "main": "build/index.js",
@@ -60,5 +60,8 @@
     "request": "^2.79.0",
     "request-promise": "^4.2.2",
     "typed-error": "^3.2.1"
+  },
+  "versionist": {
+    "publishedAt": "2022-02-03T08:46:24.031Z"
   }
 }
