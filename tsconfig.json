@@ -12,6 +12,7 @@
 		"declaration": true
 	},
 	"include": [
-		"lib/index.ts"
+		"lib/**/*.ts",
+		"test/**/*.ts"
 	]
 }

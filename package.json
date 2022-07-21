@@ -19,7 +19,8 @@
     "url": "https://github.com/resin-io-modules/front-sdk/issues"
   },
   "scripts": {
-    "build": "gulp build",
+    "clean": "rimraf build",
+    "build": "npmrun clean && tsc",
     "lint": "gulp tslint",
     "test": "gulp tslint && gulp test",
     "prepublish": "npm run build"
