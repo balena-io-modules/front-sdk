@@ -109,6 +109,9 @@ To post a Comment or Message to that Conversation:
 To run tests locally you will need to provide a Front API token and a test topic issue.
 
 ```
+export GH_TOPIC_ISSUE=123456789
+export GH_TOPIC_OWNER="balena-io-modules"
+export GH_TOPIC_REPO="front-sdk"
 export FRONT_TOKEN=XXXX_MY_TOKEN_XXXXX
 npm run test
 ```

@@ -6,14 +6,16 @@ import * as chai from 'chai';
 import ChaiAsPromised from 'chai-as-promised';
 import 'mocha';
 import { Conversation, FrontError, TopicConversations } from '../lib/index';
-import { getKeeper } from './keeper';
 
 chai.use(ChaiAsPromised);
 chai.should();
+const testTopicIssue = {
+	issue: parseInt(process.env.GH_TOPIC_ISSUE!, 10),
+	owner: process.env.GH_TOPIC_OWNER!,
+	repo: process.env.GH_TOPIC_REPO!,
+};
 
 describe('Topics', function () {
-	const vaultKeeper = getKeeper();
-	const keys = vaultKeeper.keys;
 	let githubInst: GithubApi.Octokit;
 
 	before(function () {
@@ -45,9 +47,9 @@ describe('Topics', function () {
 	it.skip('should list all of conversations associated with a topic', function () {
 		return githubInst.issues
 			.get({
-				issue_number: keys.testTopicIssue.issue,
-				owner: keys.testTopicIssue.owner,
-				repo: keys.testTopicIssue.repo,
+				issue_number: testTopicIssue.issue,
+				owner: testTopicIssue.owner,
+				repo: testTopicIssue.repo,
 			})
 			.then((issue) => {
 				issue.data.body.should.exist;

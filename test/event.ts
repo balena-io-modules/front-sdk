@@ -5,22 +5,21 @@ import ChaiAsPromised from 'chai-as-promised';
 import express from 'express';
 import 'mocha';
 import { Front } from '../lib/index';
-import { getKeeper } from './keeper';
 
 chai.use(ChaiAsPromised);
 chai.should();
 
+const FRONT_TOKEN = process.env.FRONT_TOKEN!;
+
 describe('Events', function () {
-	const vaultKeeper = getKeeper();
-	const keys = vaultKeeper.keys;
 	let frontInst: Front;
 
 	before(function () {
-		frontInst = new Front(keys.apiKey, 'madeupkey');
+		frontInst = new Front(FRONT_TOKEN, 'madeupkey');
 	});
 
 	it('should fail as no secret key is set', function (done) {
-		const brokenInst = new Front(keys.apiKey);
+		const brokenInst = new Front(FRONT_TOKEN);
 		try {
 			brokenInst.registerEvents({ port: 1234 }, () => {
 				done('Should not have received an event');
