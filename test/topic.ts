@@ -1,5 +1,5 @@
 // Needed due to chai's should.exist
-/* tslint:disable: no-unused-expression */
+/* tslint:disable: no-unused-expression no-unused-expression-chai */
 import * as GithubApi from '@octokit/rest';
 import * as Promise from 'bluebird';
 import * as chai from 'chai';
@@ -18,7 +18,7 @@ describe('Topics', function () {
 
 	before(function () {
 		githubInst = new GithubApi.Octokit({
-			Promise: <any>Promise,
+			Promise: Promise as any,
 			headers: {
 				Accept: 'application/vnd.github.loki-preview+json',
 			},

@@ -21,9 +21,9 @@
   "scripts": {
     "clean": "rimraf build",
     "build": "npm run clean && tsc",
-    "lint": "balena-lint lib test && deplint",
+    "lint": "balena-lint lib test",
     "lint:fix": "balena-lint --fix lib test",
-    "test": "gulp tslint && gulp test",
+    "test": "npm run lint && mocha",
     "prepublish": "npm run build"
   },
   "devDependencies": {

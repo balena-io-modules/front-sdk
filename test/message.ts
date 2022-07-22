@@ -1,5 +1,5 @@
 // Needed due to chai's should.exist
-/* tslint:disable: no-unused-expression */
+/* tslint:disable: no-unused-expression no-unused-expression-chai */
 import Bluebird from 'bluebird';
 import * as chai from 'chai';
 import ChaiAsPromised from 'chai-as-promised';

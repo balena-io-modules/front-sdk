@@ -35,14 +35,7 @@ interface EventPreview {
 
 type Request = {
 	method: string;
-} & (
-	| {
-			url: string;
-	  }
-	| {
-			path: string;
-	  }
-);
+} & ({ url: string } | { path: string });
 
 type InternalCallback = (err: Error | null, response: any | null) => void;
 
@@ -436,8 +429,8 @@ export class Front {
 	// Utility method for occasions where we have the actual url, eg `_links`
 	public getFromLink(
 		url: string,
-		callback?: Callback<Object>,
-	): Promise<Object> {
+		callback?: Callback<object>,
+	): Promise<object> {
 		// This prunes the API url and any leading / from a path to request
 		const path = url.replace(URL, '').replace(/^\//, '');
 		return this.httpCall({ method: 'GET', path }, null, callback);
@@ -491,7 +484,7 @@ export class Front {
 			re: RegExp,
 			operation: (matches: RegExpMatchArray) => void,
 		) => {
-			let matches = path.match(re);
+			const matches = path.match(re);
 			if (matches) {
 				operation(matches);
 			}
@@ -733,16 +726,16 @@ export interface Contact {
 	avatar_url: string;
 	is_spammer: boolean;
 	links: string[];
-	handles: Array<{
+	handles: {
 		handle: string;
 		source: string;
-	}>;
-	groups: Array<{
+	}[];
+	groups: {
 		_links: Links;
 		id: string;
 		name: string;
 		is_private: boolean;
-	}>;
+	}[];
 	updated_at: number;
 	custom_fields: {
 		[key: string]: string;
@@ -753,10 +746,10 @@ export interface Contact {
 export namespace ContactRequest {
 	// Request structures /////////////////////////////////////////////////////
 	export interface Create {
-		handles: Array<{
+		handles: {
 			handle: string;
 			source: string;
-		}>;
+		}[];
 		name?: string;
 		description?: string;
 		is_spammer?: boolean;
@@ -834,6 +827,7 @@ export interface ConversationMessages {
 
 export namespace ConversationRequest {
 	// Request structures /////////////////////////////////////////////////////
+	/* tslint:disable: no-shadowed-variable */
 	export interface List {
 		q?: string;
 		page_token?: string;
