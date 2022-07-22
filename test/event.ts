@@ -1,8 +1,8 @@
 // Needed due to chai's should.exist
 /* tslint:disable: no-unused-expression */
 import * as chai from 'chai';
-import * as ChaiAsPromised from 'chai-as-promised';
-import * as express from 'express';
+import ChaiAsPromised from 'chai-as-promised';
+import express from 'express';
 import 'mocha';
 import { Front } from '../lib/index';
 import { getKeeper } from './keeper';
@@ -25,7 +25,7 @@ describe('Events', function () {
 			brokenInst.registerEvents({ port: 1234 }, () => {
 				done('Should not have received an event');
 			});
-		} catch (err) {
+		} catch (err: any) {
 			err.message.should.eq('No secret key registered');
 			done();
 		}
@@ -36,8 +36,10 @@ describe('Events', function () {
 			frontInst.registerEvents({}, () => {
 				done('Should not have received an event');
 			});
-		} catch (err) {
-			err.message.should.eq('Pass either an Express instance or a port to listen on');
+		} catch (err: any) {
+			err.message.should.eq(
+				'Pass either an Express instance or a port to listen on',
+			);
 			done();
 		}
 	});
@@ -47,8 +49,10 @@ describe('Events', function () {
 			frontInst.registerEvents({ server: express(), port: 1234 }, () => {
 				done('Should not have received an event');
 			});
-		} catch (err) {
-			err.message.should.eq('Pass either an Express instance or a port to listen on');
+		} catch (err: any) {
+			err.message.should.eq(
+				'Pass either an Express instance or a port to listen on',
+			);
 			done();
 		}
 	});

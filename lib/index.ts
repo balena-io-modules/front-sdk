@@ -15,14 +15,13 @@ limitations under the License.
 */
 /* tslint:disable: max-classes-per-file */
 
-import * as Promise from 'bluebird';
-import * as bodyParser from 'body-parser';
+import Promise from 'bluebird';
 import * as crypto from 'crypto';
-import * as express from 'express';
+import express from 'express';
 import { Server } from 'http';
 import * as _ from 'lodash';
 import * as querystring from 'querystring';
-import * as request from 'request-promise';
+import request from 'request-promise';
 import { TypedError } from 'typed-error';
 
 const URL = 'https://api2.frontapp.com';
@@ -36,11 +35,14 @@ interface EventPreview {
 
 type Request = {
 	method: string;
-} & ({
-	url: string;
-} | {
-	path: string;
-});
+} & (
+	| {
+			url: string;
+	  }
+	| {
+			path: string;
+	  }
+);
 
 type InternalCallback = (err: Error | null, response: any | null) => void;
 
@@ -322,14 +324,20 @@ export class Front {
 	};
 
 	public channel = {
-		update: (params: ChannelRequest.UpdateChannel, callback?: Callback<Channel>):
-		Promise<Channel> => this.httpCall({ method: 'PATCH',
-			path: 'channels/<channel_id>' }, params, callback),
+		update: (
+			params: ChannelRequest.UpdateChannel,
+			callback?: Callback<Channel>,
+		): Promise<Channel> =>
+			this.httpCall(
+				{ method: 'PATCH', path: 'channels/<channel_id>' },
+				params,
+				callback,
+			),
 	};
 
 	// Keys for Front access and event verification.
 	private apiKey: string;
-	private apiSecret: string;
+	private apiSecret: string | null = null;
 
 	constructor(apiKey: string, apiSecret?: string) {
 		// Key.
@@ -393,8 +401,8 @@ export class Front {
 			listener = express();
 
 			// Use body parser.
-			listener.use(bodyParser.urlencoded({ extended: true }));
-			listener.use(bodyParser.json());
+			listener.use(express.urlencoded({ extended: true }));
+			listener.use(express.json());
 
 			httpServer = listener.listen(opts.port);
 		}
@@ -435,9 +443,16 @@ export class Front {
 		return this.httpCall({ method: 'GET', path }, null, callback);
 	}
 
-	public httpCall(details: Request, params: any, callback?: InternalCallback, retries: number = 0):
-		Promise<any | void>	{
-		const url = 'url' in details ? details.url : `${URL}/${this.formatPath(details.path, params)}`;
+	public httpCall<T>(
+		details: Request,
+		params: any,
+		callback?: InternalCallback,
+		retries: number = 0,
+	): Promise<T> {
+		const url =
+			'url' in details
+				? details.url
+				: `${URL}/${this.formatPath(details.path, params)}`;
 		const body = params || {};
 
 		const requestOpts = {
@@ -526,6 +541,11 @@ export class Front {
 
 	private validateEventSignature(data: any, signature: string): boolean {
 		let hash = '';
+
+		if (!this.apiSecret) {
+			throw new Error('Failed to validate event signature. Missing API secret');
+		}
+
 		try {
 			hash = crypto
 				.createHmac('sha1', this.apiSecret)
@@ -566,10 +586,10 @@ export interface ConversationReference {
 }
 
 export class FrontError extends TypedError {
-	public name: string;
-	public status: number;
-	public title: string;
-	public message: string;
+	public name: string = '';
+	public status: number | undefined;
+	public title: string | undefined;
+	public message: string = '';
 	public details?: string[];
 	[key: string]: number | string | string[] | void;
 
@@ -874,22 +894,18 @@ export interface List<T> {
 	_results: T[];
 }
 
-export interface Inboxes extends List<Inbox> {
-}
+export interface Inboxes extends List<Inbox> {}
 
 export interface InboxCreation {
 	id: string;
 	name: string;
 }
 
-export interface InboxChannels extends List<Channel> {
-}
+export interface InboxChannels extends List<Channel> {}
 
-export interface InboxConversations extends List<Conversation> {
-}
+export interface InboxConversations extends List<Conversation> {}
 
-export interface InboxTeammates extends List<Author> {
-}
+export interface InboxTeammates extends List<Author> {}
 
 export namespace InboxRequest {
 	// Request structures /////////////////////////////////////////////////////

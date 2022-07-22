@@ -1,7 +1,7 @@
 // Needed due to chai's should.exist
 /* tslint:disable: no-unused-expression */
 import * as chai from 'chai';
-import * as ChaiAsPromised from 'chai-as-promised';
+import ChaiAsPromised from 'chai-as-promised';
 import ChaiString = require('chai-string');
 import * as _ from 'lodash';
 import 'mocha';
