@@ -42,7 +42,6 @@ const fetchAll = async <T>(
 before(async function () {
 	this.globals = {};
 
-	const keys = getKeeper().keys;
 	const front = (this.globals.front = new Front(FRONT_TOKEN));
 
 	// Create a test inbox if it does not exist
