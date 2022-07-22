@@ -11,6 +11,21 @@ const TEST_INBOX_NAME = 'Front sdk test inbox';
 const TEST_CHANNEL_NAME = 'Test Channel';
 const TEST_CONVERSATION_EXTERNAL_ID = 'test_convo_external_id';
 
+export interface TestKeys {
+	apiKey: string;
+	testTopicIssue: {
+		owner: string;
+		repo: string;
+		issue: number;
+	};
+}
+
+const { testTopicIssue } = JSON.parse(
+	Buffer.from(process.env.FRONT_TEST_KEYS!, 'base64').toString(),
+);
+
+console.log('testTopicIssue', testTopicIssue);
+
 const FRONT_TOKEN = process.env.FRONT_TOKEN;
 
 assert(FRONT_TOKEN, 'FRONT_TOKEN environment variable must be set');
