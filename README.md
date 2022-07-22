@@ -106,8 +106,9 @@ To post a Comment or Message to that Conversation:
 
 ## Running tests locally
 
-Put [configuration](./test/keeper.ts) in `./test/creds.json` file and then run:
+To run tests locally you will need to provide a Front API token and a test topic issue.
 
 ```
-FRONT_TEST_KEYS=`node ./test/encode_keys.js ./test/creds.json` npm run test
+export FRONT_TOKEN=XXXX_MY_TOKEN_XXXXX
+npm run test
 ```

@@ -4,12 +4,16 @@ import express from 'express';
 import { Server } from 'http';
 import * as ngrok from 'ngrok';
 import { Channel, Front, InboxCreation, List } from '../lib/index';
-import { getKeeper } from './keeper';
 import { AddressInfo } from 'net';
+import { strict as assert } from 'assert';
 
 const TEST_INBOX_NAME = 'Front sdk test inbox';
 const TEST_CHANNEL_NAME = 'Test Channel';
 const TEST_CONVERSATION_EXTERNAL_ID = 'test_convo_external_id';
+
+const FRONT_TOKEN = process.env.FRONT_TOKEN;
+
+assert(FRONT_TOKEN, 'FRONT_TOKEN environment variable must be set');
 
 const fetchAll = async <T>(
 	front: Front,
@@ -39,7 +43,7 @@ before(async function () {
 	this.globals = {};
 
 	const keys = getKeeper().keys;
-	const front = (this.globals.front = new Front(keys.apiKey));
+	const front = (this.globals.front = new Front(FRONT_TOKEN));
 
 	// Create a test inbox if it does not exist
 	const inboxes = await fetchAll(front, front.inbox.list);
