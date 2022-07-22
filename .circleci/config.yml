@@ -3,27 +3,20 @@ version: 2
 jobs:
   build:
     docker: # use the docker executor type; machine and macos executors are also supported
-      - image: circleci/node:10.18.1 # the primary container, where your job's commands are run
+      - image: circleci/node:16.11.1 # the primary container, where your job's commands are run
     steps:
       - checkout # check out the code in the project directory
       - run: npm install
       - run: npm run build
   test:
     docker: # use the docker executor type; machine and macos executors are also supported
-      - image: circleci/node:9.9.0 # the primary container, where your job's commands are run
+      - image: circleci/node:16.11.1 # the primary container, where your job's commands are run
     steps:
       - checkout # check out the code in the project directory
       - run: npm install
-      - run: mkdir ~/junit
       - run:
           command: npm run test
-          environment:
-            MOCHA_FILE: ~/junit/test-results.xml
           when: always
-      - store_test_results:
-          path: ~/junit
-      - store_artifacts:
-          path: ~/junit 
 workflows:
   version: 2
   build:

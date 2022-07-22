@@ -1,31 +1,30 @@
 // Needed due to chai's should.exist
 /* tslint:disable: no-unused-expression */
 import * as chai from 'chai';
-import * as ChaiAsPromised from 'chai-as-promised';
-import * as express from 'express';
+import ChaiAsPromised from 'chai-as-promised';
+import express from 'express';
 import 'mocha';
 import { Front } from '../lib/index';
-import { getKeeper } from './keeper';
 
 chai.use(ChaiAsPromised);
 chai.should();
 
+const FRONT_TOKEN = process.env.FRONT_TOKEN!;
+
 describe('Events', function () {
-	const vaultKeeper = getKeeper();
-	const keys = vaultKeeper.keys;
 	let frontInst: Front;
 
 	before(function () {
-		frontInst = new Front(keys.apiKey, 'madeupkey');
+		frontInst = new Front(FRONT_TOKEN, 'madeupkey');
 	});
 
 	it('should fail as no secret key is set', function (done) {
-		const brokenInst = new Front(keys.apiKey);
+		const brokenInst = new Front(FRONT_TOKEN);
 		try {
 			brokenInst.registerEvents({ port: 1234 }, () => {
 				done('Should not have received an event');
 			});
-		} catch (err) {
+		} catch (err: any) {
 			err.message.should.eq('No secret key registered');
 			done();
 		}
@@ -36,8 +35,10 @@ describe('Events', function () {
 			frontInst.registerEvents({}, () => {
 				done('Should not have received an event');
 			});
-		} catch (err) {
-			err.message.should.eq('Pass either an Express instance or a port to listen on');
+		} catch (err: any) {
+			err.message.should.eq(
+				'Pass either an Express instance or a port to listen on',
+			);
 			done();
 		}
 	});
@@ -47,8 +48,10 @@ describe('Events', function () {
 			frontInst.registerEvents({ server: express(), port: 1234 }, () => {
 				done('Should not have received an event');
 			});
-		} catch (err) {
-			err.message.should.eq('Pass either an Express instance or a port to listen on');
+		} catch (err: any) {
+			err.message.should.eq(
+				'Pass either an Express instance or a port to listen on',
+			);
 			done();
 		}
 	});

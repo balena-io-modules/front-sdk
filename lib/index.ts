@@ -15,14 +15,13 @@ limitations under the License.
 */
 /* tslint:disable: max-classes-per-file */
 
-import * as Promise from 'bluebird';
-import * as bodyParser from 'body-parser';
+import Promise from 'bluebird';
 import * as crypto from 'crypto';
-import * as express from 'express';
+import express from 'express';
 import { Server } from 'http';
 import * as _ from 'lodash';
 import * as querystring from 'querystring';
-import * as request from 'request-promise';
+import request from 'request-promise';
 import { TypedError } from 'typed-error';
 
 const URL = 'https://api2.frontapp.com';
@@ -36,11 +35,7 @@ interface EventPreview {
 
 type Request = {
 	method: string;
-} & ({
-	url: string;
-} | {
-	path: string;
-});
+} & ({ url: string } | { path: string });
 
 type InternalCallback = (err: Error | null, response: any | null) => void;
 
@@ -322,14 +317,20 @@ export class Front {
 	};
 
 	public channel = {
-		update: (params: ChannelRequest.UpdateChannel, callback?: Callback<Channel>):
-		Promise<Channel> => this.httpCall({ method: 'PATCH',
-			path: 'channels/<channel_id>' }, params, callback),
+		update: (
+			params: ChannelRequest.UpdateChannel,
+			callback?: Callback<Channel>,
+		): Promise<Channel> =>
+			this.httpCall(
+				{ method: 'PATCH', path: 'channels/<channel_id>' },
+				params,
+				callback,
+			),
 	};
 
 	// Keys for Front access and event verification.
 	private apiKey: string;
-	private apiSecret: string;
+	private apiSecret: string | null = null;
 
 	constructor(apiKey: string, apiSecret?: string) {
 		// Key.
@@ -393,8 +394,8 @@ export class Front {
 			listener = express();
 
 			// Use body parser.
-			listener.use(bodyParser.urlencoded({ extended: true }));
-			listener.use(bodyParser.json());
+			listener.use(express.urlencoded({ extended: true }));
+			listener.use(express.json());
 
 			httpServer = listener.listen(opts.port);
 		}
@@ -428,16 +429,23 @@ export class Front {
 	// Utility method for occasions where we have the actual url, eg `_links`
 	public getFromLink(
 		url: string,
-		callback?: Callback<Object>,
-	): Promise<Object> {
+		callback?: Callback<object>,
+	): Promise<object> {
 		// This prunes the API url and any leading / from a path to request
 		const path = url.replace(URL, '').replace(/^\//, '');
 		return this.httpCall({ method: 'GET', path }, null, callback);
 	}
 
-	public httpCall(details: Request, params: any, callback?: InternalCallback, retries: number = 0):
-		Promise<any | void>	{
-		const url = 'url' in details ? details.url : `${URL}/${this.formatPath(details.path, params)}`;
+	public httpCall<T>(
+		details: Request,
+		params: any,
+		callback?: InternalCallback,
+		retries: number = 0,
+	): Promise<T> {
+		const url =
+			'url' in details
+				? details.url
+				: `${URL}/${this.formatPath(details.path, params)}`;
 		const body = params || {};
 
 		const requestOpts = {
@@ -476,7 +484,7 @@ export class Front {
 			re: RegExp,
 			operation: (matches: RegExpMatchArray) => void,
 		) => {
-			let matches = path.match(re);
+			const matches = path.match(re);
 			if (matches) {
 				operation(matches);
 			}
@@ -526,6 +534,11 @@ export class Front {
 
 	private validateEventSignature(data: any, signature: string): boolean {
 		let hash = '';
+
+		if (!this.apiSecret) {
+			throw new Error('Failed to validate event signature. Missing API secret');
+		}
+
 		try {
 			hash = crypto
 				.createHmac('sha1', this.apiSecret)
@@ -566,10 +579,10 @@ export interface ConversationReference {
 }
 
 export class FrontError extends TypedError {
-	public name: string;
-	public status: number;
-	public title: string;
-	public message: string;
+	public name: string = '';
+	public status: number | undefined;
+	public title: string | undefined;
+	public message: string = '';
 	public details?: string[];
 	[key: string]: number | string | string[] | void;
 
@@ -713,16 +726,16 @@ export interface Contact {
 	avatar_url: string;
 	is_spammer: boolean;
 	links: string[];
-	handles: Array<{
+	handles: {
 		handle: string;
 		source: string;
-	}>;
-	groups: Array<{
+	}[];
+	groups: {
 		_links: Links;
 		id: string;
 		name: string;
 		is_private: boolean;
-	}>;
+	}[];
 	updated_at: number;
 	custom_fields: {
 		[key: string]: string;
@@ -733,10 +746,10 @@ export interface Contact {
 export namespace ContactRequest {
 	// Request structures /////////////////////////////////////////////////////
 	export interface Create {
-		handles: Array<{
+		handles: {
 			handle: string;
 			source: string;
-		}>;
+		}[];
 		name?: string;
 		description?: string;
 		is_spammer?: boolean;
@@ -814,6 +827,7 @@ export interface ConversationMessages {
 
 export namespace ConversationRequest {
 	// Request structures /////////////////////////////////////////////////////
+	/* tslint:disable: no-shadowed-variable */
 	export interface List {
 		q?: string;
 		page_token?: string;
@@ -874,22 +888,18 @@ export interface List<T> {
 	_results: T[];
 }
 
-export interface Inboxes extends List<Inbox> {
-}
+export interface Inboxes extends List<Inbox> {}
 
 export interface InboxCreation {
 	id: string;
 	name: string;
 }
 
-export interface InboxChannels extends List<Channel> {
-}
+export interface InboxChannels extends List<Channel> {}
 
-export interface InboxConversations extends List<Conversation> {
-}
+export interface InboxConversations extends List<Conversation> {}
 
-export interface InboxTeammates extends List<Author> {
-}
+export interface InboxTeammates extends List<Author> {}
 
 export namespace InboxRequest {
 	// Request structures /////////////////////////////////////////////////////

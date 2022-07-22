@@ -50,3 +50,5 @@ test/creds.json
 
 build/
 test/build/
+.gitsecret/keys/random_seed
+!*.secret
